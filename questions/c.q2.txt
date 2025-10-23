@@ -1,0 +1,1773 @@
+What does this OpenACC code will do?
+
+
+
+9       // initialization
+10      for (int i = 0; i < N; i++) vec[i] = i+1;
+11
+12      #pragma acc parallel async
+13      for (int i = 100; i < N; i++) gpu_sum += vec[i];
+14
+15      // the following code executes without waiting for GPU result
+16      for (int i = 0; i < 100; i++) cpu_sum += vec[i];
+17
+18      // synchronize and verify results
+19      #pragma acc wait
+20      printf(“Result: %d (expected: %d)\n”, gpu_sum+cpu_sum, (N+1)∗N/2);
+Sums vector of 1000 elements, first 100 with GPU, 900 with CPU synchronous.
+
+Sums vector of 1000 elements, first 100 with CPU, 900 with GPU synchronous.
+
+Correct:
+
+Sums vector of 1000 elements, first 100 with CPU, 900 with GPU asynchronous.
+
+Correct answer
+Sums vector of 1000 elements, first 100 with GPU, 900 with CPU asynchronous.
+
+Feedback
+The correct answer is: "Sums vector of 1000 elements, first 100 with CPU, 900 with GPU asynchronous." The code performs a partial sum on the CPU and offloads the rest to the GPU asynchronously, ensuring non-blocking execution with synchronization at the end.
+
+Question 2
+2
+True/False
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+A rank number from 0 to N-1 is assigned to each process in an MPI process group of size N, and the higher rank processes are given higher resource priority.
+
+T
+True
+F
+False
+Correct answer
+Feedback
+ In MPI (Message Passing Interface), which is a standardized and portable message-passing system designed to function on a wide variety of parallel computing architectures, each process is indeed assigned a unique rank number within a communicator, but this rank does not imply a priority of resources.
+
+The rank is simply an identifier used to specify the source and destination of messages in communication operations. All processes in MPI are considered peers; the rank does not inherently control the amount of resources a process receives or its execution priority on the underlying hardware. Resource allocation and process scheduling are typically managed by the operating system and the job scheduler on a cluster, not by MPI itself. The role of MPI is primarily concerned with communication and coordination among processes during the execution of a parallel program.
+
+Question 3
+3
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+A weather simulation application uses MPI to process climate data across multiple regions. Each MPI process handles data for one region and needs to share boundary conditions with neighbouring regions. If the simulation runs with 8 processes arranged in a 2x4 grid, how should MPI_Send and MPI_Recv be used to exchange boundary data between neighbouring processes in a non-blocking manner? Assume the processes are ordered in a row-major format.
+
+Correct:
+
+Use MPI_Isend and MPI_Irecv for each boundary, ensuring completion with MPI_Waitall for non-blocking communication.
+
+Correct answer
+MPI_Bcast should be used for each region to broadcast boundary data to all other regions.
+
+Use MPI_Sendrecv for all boundaries to simplify code and avoid deadlocks.
+
+Use MPI_Gather to collect boundary data at a central process and redistribute with MPI_Scatter.
+
+Each process should use MPI_Send to send boundary data to all neighboring processes simultaneously.
+
+Feedback
+Correct! MPI_Isend and MPI_Irecv are used to handle boundary exchanges efficiently in a non-blocking manner.
+
+Question 4
+4
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+ In the following MPI code, which process will output the final value of result and what will it be?
+
+#include <mpi.h>
+#include <stdio.h>
+ 
+int main(int argc, char *argv[]) {
+   MPI_Init(&argc, &argv);
+ 
+   int rank, size;
+   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+   MPI_Comm_size(MPI_COMM_WORLD, &size);
+ 
+   int data = rank * 2;
+   int result = 0;
+ 
+   MPI_Reduce(&data, &result, 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
+ 
+   if (rank == 0) {
+       printf("The maximum value is %d\n", result);
+   }
+ 
+   MPI_Finalize();
+   return 0;
+}
+Rank 0 will output "The maximum value is 0"
+
+Rank 3 will output "The maximum value is 6"
+
+Rank 3 will output "The maximum value is 3"
+
+Rank 0 will output "The maximum value is 3"
+
+Correct:
+
+Rank 0 will output "The maximum value is 6"
+
+Correct answer
+Feedback
+Correct! Rank 0 will output "The maximum value is 6".
+
+Question 5
+5
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Which of the following is incorrect about MPI:
+
+You can compile your MPI code using any MPI implementation, running on your architecture
+
+Correct:
+
+MPI uses a shared memory programming model, which means all processes can access shared memory
+
+Correct answer
+MPI functions are standardized, which means function calls behave the same regardless of which implementation is used
+
+Any MPI process can directly send and receive messages, to and from other processes
+
+Feedback
+MPI does not use a shared memory programming model unlike OpenMP. 
+
+Question 6
+6
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+ 
+int i = blockIdx.x*blockDim.x + threadIdx.x;
+y[i] = a*x[i] + y[i];
+ 
+Which mapping best favors coalesced reads of x/y?
+
+Even/odd split (evens then odds)
+
+Reverse index i = n-1-i
+
+Randomized i per thread
+
+ Stride-k access with i*=k
+
+Correct:
+
+Contiguous i as shown
+
+Correct answer
+Feedback
+ Contiguous per-thread indices enable warps to fetch adjacent addresses in a single transaction; slides emphasize memory throughput.
+
+Question 7
+7
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+A ______________ construct by itself creates a “single program multiple data” program, i.e., each thread executes the same code.
+
+Correct:
+
+Parallel
+
+Correct answer
+Master
+
+Single
+
+Section
+
+Question 8
+8
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Given the following pseudocode for a parallel for loop using OpenMP, what will be the final value of the variable sum?
+
+sum = 0
+array = [1, 2, 3, 4, 5]
+ 
+#pragma omp parallel for reduction(+:sum)
+for i = 0 to 4:
+   sum = sum + array[i]
+5
+
+Correct:
+
+15
+
+Correct answer
+10
+
+1
+
+0
+
+Feedback
+Correct! The final value of sum is 15.
+
+Question 9
+9
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Imagine a scenario where you have a huge image dataset that needs to be processed in parallel to identify certain patterns. Which of the following MPI functions would be most suitable for sending portions of an image to different processes for parallel processing?
+
+MPI_Reduce()
+
+Correct:
+
+MPI_Scatter()
+
+Correct answer
+MPI_Bcast()
+
+MPI_Barrier()
+
+MPI_Gather()
+
+Feedback
+MPI_Scatter() Explanation: MPI_Scatter() is a collective communication function that divides the data (image portions) equally among all processes for parallel computation. In this case, each process will work on its own portion of the image data simultaneously.
+
+Question 10
+10
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Real use case: 3-stage pipeline over 2D tiles: blur → sobel → histogram. Fill the missing depend clauses so stages respect per-tile order while different tiles overlap:
+
+ 
+#pragma omp parallel
+#pragma omp single
+for (int t=0; t<T; ++t) {
+    #pragma omp task /* A: blur tile t */           depend(?A)
+    blur(tile[t], tmp[t]);
+ 
+    #pragma omp task /* B: sobel tile t */          depend(?B)
+    sobel(tmp[t], edge[t]);
+ 
+    #pragma omp task /* C: histogram tile t */      depend(?C)
+    hist(edge[t], H[t]);
+}
+#pragma omp taskwait
+ 
+Choose the best tuple (?A, ?B, ?C):
+
+in: tile[t], in: tmp[t], in: edge[t]
+
+out: tmp[t], out: edge[t], in: edge[t]
+
+mutexinoutset: t, mutexinoutset: t, mutexinoutset: t
+
+out: tile[t], in: tile[t], in: tmp[t]
+
+Correct:
+
+out: tmp[t], in: tmp[t] out: edge[t], in: edge[t]
+
+Correct answer
+Feedback
+ Stage A producestmp[t] → depend(out: tmp[t]). Stage B consumestmp[t] and producesedge[t] → depend(in: tmp[t], out: edge[t]). Stage C consumesedge[t] → depend(in: edge[t]). Different tiles (t≠t') can run concurrently; within a tile, order is enforced without barriers — exactly the task/depend usage introduced in the slides.
+
+Question 11
+11
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+ 
+#pragma acc kernels copyin(m[:N][:N], v[:N]) copyout(b[:N])
+for(int i=0;i<N;i++){
+  b[i]=0;
+  for(int j=0;j<N;j++) b[i]+=m[i][j]*v[j];
+}
+ 
+Why these clauses?
+
+ To pin host memory.
+
+Correct:
+
+To bring m,v to device and return b to host.
+
+Correct answer
+To allocate but never move data.
+
+To make all arrays private.
+
+ To enable unified memory.
+
+Feedback
+copyin for inputs; copyout for outputs is the exact pattern used in the slides’ dynamic allocation example.
+
+Question 12
+12
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+What is the result of this MPI mapreduce if it is run on 3 processes or more?
+
+1 #include <stdio.h>
+
+2 #include <mpi.h>
+
+3
+
+4 int main(int argc,char ∗∗argv) {
+
+5  
+
+6    MPI_Init(&argc,&argv);
+
+7    int rank;
+
+8    MPI_Comm_rank(MPI_COMM_WORLD,&rank); // identify rank
+
+9
+
+10    int input = 0;
+
+11    if ( rank == 0 ) {
+
+12       input = 2;
+
+13    } else if ( rank == 1 ) {
+
+14       input = 7;
+
+15    } else if ( rank == 2 ) {
+
+16       input = 1;
+
+17    }
+
+18    int output;
+
+19
+
+20    MPI_Allreduce(&input,&output,1,MPI_INT,MPI_SUM,MPI_COMM_WORLD);
+
+21
+
+22    printf("The result is %d rank %d\n",output,rank);
+
+23
+
+24    MPI_Finalize();
+
+25
+
+26    return 0;
+
+27 }
+
+15
+
+5
+
+20
+
+Correct:
+
+10
+
+Correct answer
+Feedback
+An example of MPI_Allreduce. The sum of the input variable is computed and broadcast to all processes. If run on three processes or more, each process should have as output the value 10.> mpirun –np 4 ./code10
+
+The result is 10 rank 0
+
+The result is 10 rank 1
+
+The result is 10 rank 2
+
+The result is 10 rank 3
+
+Question 13
+13
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+In a deep learning project, you need to utilize GPUs for training neural networks. What is the main advantage of using CUDA in this context?
+
+Automatically balances load across nodes
+
+Provides a global address space
+
+Correct:
+
+Enables high-throughput parallel processing on GPUs
+
+Correct answer
+Reduces communication overhead
+
+Simplifies memory management
+
+Feedback
+Correct! CUDA enables high-throughput parallel processing on GPUs.
+
+Question 14
+14
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+In CUDA programming, what is the purpose of the __global__ keyword, and how does it differ from __device__ and __host__ qualifiers?
+
+__device__ marks functions that can be called from both the CPU and GPU, while __host__ is used for GPU-only functions.
+
+__device__ is for CPU functions only, while __global__ is for functions callable from the GPU.
+
+Correct:
+
+__global__ denotes a function that runs on the GPU and can be called from the CPU, requiring a specific execution configuration.
+
+Correct answer
+__global__ marks functions that can only be called from the GPU.
+
+__global__ is used for functions that are executed on the CPU but control GPU operations.
+
+Feedback
+The __global__ keyword is used in CUDA to define a kernel function that runs on the GPU and can be called from the CPU. It requires an execution configuration to specify the grid and block dimensions. The __device__ qualifier marks functions that run on the GPU and are callable from other GPU functions, while __host__ is used for functions running on the CPU.
+
+Question 15
+15
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Given:
+
+ 
+int send = rank;
+int recv[4] = {0};
+MPI_Allgather(&send, 1, MPI_INT, recv, 1, MPI_INT, MPI_COMM_WORLD);
+ 
+What must hold about recv after the call on every rank (for 4 processes)?
+
+recv={1,2,3,4}
+
+Contents are unspecified without tags.
+
+Only rank 0 has recv filled; others zeros.
+
+Deterministic only if a barrier precedes it.
+
+Correct:
+
+recv={0,1,2,3}
+
+Correct answer
+Feedback
+Allgather is “gather to root + broadcast to all” → each rank receives the vector [0,1,2,3] (rank IDs) as shown in the slides.
+
+Question 16
+16
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+What is the primary purpose of OpenMP?
+
+Object-oriented programming.
+
+Graphics rendering.
+
+Correct:
+
+Shared memory parallel programming.
+
+Correct answer
+Database management.
+
+Network programming.
+
+Feedback
+Shared memory parallel programming. Explanation: OpenMP stands for "Open Multi-Processing" and is primarily designed for shared memory parallel programming in C, C++, and Fortran.
+
+Question 17
+17
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+For a financial modelling application running on a distributed memory system, you need to ensure minimal latency in data exchanges. What is the best approach to achieve this?
+
+Use blocking communication to ensure data consistency
+
+Use OpenMP for inter-node communication
+
+Correct:
+
+Implement non-blocking communication to overlap computation and communication
+
+Correct answer
+Use a single node for centralized memory access
+
+Employ static scheduling to pre-assign tasks
+
+Feedback
+Correct! Non-blocking communication is the best approach for minimizing latency.
+
+Question 18
+18
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Your research project involves training a deep neural network, requiring significant computational resources and efficient parallelism. You have access to both CPUs and GPUs. Which approach and tools would you use to optimize training?
+
+Correct:
+
+Heterogeneous computing with CUDA and OpenCL
+
+Correct answer
+MPI for inter-node communication
+
+OpenMP for CPU parallelism
+
+Hybrid model with MPI and OpenMP
+
+CUDA for GPU acceleration
+
+Feedback
+Correct! Heterogeneous computing with CUDA and OpenCL is the best approach for optimizing deep neural network training.
+
+Question 19
+19
+Multiple Choice
+INCORRECT
+0
+/
+10
+Grade: 0 out of 10 points possible
+Consider the following (pseudo) code - remember that Isend is a nonblocking / immediate send. What happens at runtime? 
+
+
+
+Process A
+
+MPI_Isend(sendmsg1,B,tag=1)
+
+MPI_Isend(sendmsg2,B,tag=2)
+
+
+
+Process B
+
+MPI_Recv(recvmsg2,A,tag=2)
+
+MPI_Recv(recvmsg1,A,tag=1)
+
+recvmsg1 = sendmsg1 and recvmsg2 = sendmsg2
+
+Correct answer
+both receives complete but their contents are undefined
+
+The code might deadlock
+
+Incorrect:
+
+recvmsg1 = sendmsg2 and recvmsg2 = sendmsg1
+
+The code is guaranteed to deadlock
+
+Feedback
+Process B will receive the messages in the reverse order. But the Isend is nonblocking so there will not be a deadlock.
+
+Question 20
+20
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+In high-performance computing scenarios like simulating weather patterns, ensuring all processes have consistent weather data is crucial. Which MPI function would be effective in making sure that an updated weather parameter (e.g., temperature) from the master process is communicated to all other processes?
+
+MPI_Recv()
+
+MPI_Reduce()
+
+Correct:
+
+MPI_Bcast()
+
+Correct answer
+MPI_Scatter()
+
+MPI_Send()
+
+Feedback
+MPI_Bcast() Explanation: MPI_Bcast() broadcasts a message from the sending process (master) to all other processes in the communicator, ensuring that all processes have the updated weather parameter.
+
+Question 21
+21
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+What does the following MPI code do, assuming it runs with 4 processes?
+
+#include <mpi.h>
+#include <stdio.h>
+ 
+int main(int argc, char *argv[]) {
+   MPI_Init(&argc, &argv);
+ 
+   int rank, size;
+   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+   MPI_Comm_size(MPI_COMM_WORLD, &size);
+ 
+   int send_buffer[4] = {rank, rank, rank, rank};
+   int recv_buffer[4] = {0, 0, 0, 0};
+ 
+   MPI_Alltoall(send_buffer, 1, MPI_INT, recv_buffer, 1, MPI_INT, MPI_COMM_WORLD);
+ 
+   printf("Rank %d received: %d %d %d %d\n", rank, recv_buffer[0], recv_buffer[1], recv_buffer[2], recv_buffer[3]);
+ 
+   MPI_Finalize();
+   return 0;
+}
+Correct:
+
+Each rank prints the ranks in ascending order from 0 to 3.
+
+Correct answer
+Each rank prints recv_buffer initialized to zeros.
+
+Each rank prints the same values in recv_buffer as send_buffer.
+
+Each rank prints its rank repeated four times.
+
+Each rank receives the same rank value from only the first process.
+
+Feedback
+Correct! Each rank will print the ranks in ascending order from 0 to 3.
+
+Question 22
+22
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Imagine you're building a photo processing application that applies a filter to a set of images. To speed up the process, you decided to use OpenMP to parallelize the task. Which OpenMP construct would you most likely use to distribute the task of applying the filter to each individual image among multiple threads?
+
+#pragma omp barrier
+
+Correct:
+
+#pragma omp parallel for
+
+Correct answer
+#pragma omp critical
+
+#pragma omp atomic
+
+#pragma omp single
+
+Feedback
+#pragma omp parallel for Explanation: The #pragma omp parallel for construct allows for loop iterations (in this case, processing each image) to be automatically distributed among multiple threads.
+
+Question 23
+23
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+A financial firm is running Monte Carlo simulations to model stock market movements. During the simulation, random paths are generated, and each path is independent of others. To ensure that only one thread accesses the shared random number generator at a time, which OpenMP directive should they use?
+
+#pragma omp sections
+
+#pragma omp parallel for
+
+Correct:
+
+#pragma omp critical
+
+Correct answer
+#pragma omp single
+
+#pragma omp parallel
+
+Feedback
+#pragma omp critical Explanation: The #pragma omp critical directive ensures mutual exclusion, meaning only one thread can execute the critical section (in this case, accessing the random number generator) at a time.
+
+Question 24
+24
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Consider the following pseudocode for a parallel matrix multiplication using OpenMP. What is the purpose of the #pragma omp parallel for directive?
+
+matrix_multiply(A, B, C, N):
+   #pragma omp parallel for
+   for i = 0 to N-1:
+       for j = 0 to N-1:
+           C[i][j] = 0
+           for k = 0 to N-1:
+               C[i][j] = C[i][j] + A[i][k] * B[k][j]
+Correct:
+
+It distributes the outer loop iterations across multiple threads.
+
+Correct answer
+It defines a critical section for synchronization.
+
+It combines the results from different threads.
+
+It ensures the loop is executed sequentially.
+
+It initializes the parallel environment.
+
+Feedback
+Correct! The #pragma omp parallel for directive distributes the outer loop iterations across multiple threads.
+
+Question 25
+25
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+ 
+#pragma acc kernels
+{
+  #pragma acc loop gang worker
+  for(int i=0;i<N;i++){ x[i]=1.0; y[i]=-1.0; }
+  #pragma acc loop independent reduction(+:r)
+  for(int i=0;i<N;i++){ y[i]=a*x[i]+y[i]; r+=y[i]; }
+}
+ 
+What’s the role of independent reduction(+:r)?
+
+Makes rfirstprivate.
+
+Correct:
+
+Declares no loop-carried deps and reduces r.
+
+Correct answer
+Moves r into shared memory.
+
+Serializes the loop end.
+
+Forbids parallelization.
+
+Feedback
+It tells the compiler the loop is safe to parallelize and accumulates r with a supported reduction operator.
+
+Question 26
+26
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+What is the primary objective of using MPI in parallel computing?
+
+Image Rendering
+
+Text Processing
+
+Correct:
+
+Communication and coordination between parallel processes
+
+Correct answer
+None of the above
+
+Cybersecurity
+
+Feedback
+Communication and coordination between parallel processes Explanation: MPI facilitates the communication and coordination among parallel processes, allowing them to work in tandem and solve problems faster than a single process could.
+
+Question 27
+27
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Analyse the following MPI code snippet. What will be printed by each process when executed with 3 processes?
+
+#include <mpi.h>
+#include <stdio.h>
+ 
+int main(int argc, char *argv[]) {
+   MPI_Init(&argc, &argv);
+ 
+   int rank;
+   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+ 
+   int send_data = rank + 3;
+   int prefix_sum = 0;
+ 
+   MPI_Scan(&send_data, &prefix_sum, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+ 
+   printf("Rank %d has prefix sum = %d\n", rank, prefix_sum);
+ 
+   MPI_Finalize();
+   return 0;
+}
+Rank 0: "prefix sum = 3", Rank 1: "prefix sum = 4", Rank 2: "prefix sum = 5"
+
+Correct:
+
+Rank 0: "prefix sum = 3", Rank 1: "prefix sum = 7", Rank 2: "prefix sum = 12"
+
+Correct answer
+Rank 0: "prefix sum = 3", Rank 1: "prefix sum = 6", Rank 2: "prefix sum = 11"
+
+Rank 0: "prefix sum = 0", Rank 1: "prefix sum = 1", Rank 2: "prefix sum = 2"
+
+Rank 0: "prefix sum = 3", Rank 1: "prefix sum = 6", Rank 2: "prefix sum = 9"
+
+Feedback
+Here's how the computation works for each process:
+
+Rank 0: send_data = 3 (since rank + 3 = 0 + 3). The prefix sum is simply 3.
+Rank 1: send_data = 4 (since rank + 3 = 1 + 3). The prefix sum for Rank 1 is 3 (from Rank 0) + 4 = 7.
+Rank 2: send_data = 5 (since rank + 3 = 2 + 3). The prefix sum for Rank 2 is 3 (from Rank 0) + 4 (from Rank 1) + 5 = 12.
+So, the correct sequence for each rank is:
+
+Rank 0: prefix sum = 3
+Rank 1: prefix sum = 7
+Rank 2: prefix sum = 12
+Given this, the correct answer is b) Rank 0: "prefix sum = 3", Rank 1: "prefix sum = 7", Rank 2: "prefix sum = 12".
+
+Question 28
+28
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Analyse the following code for potential issues with non-blocking MPI communication. What problem might arise if executed with 2 processes, and how can it be resolved?
+
+#include <mpi.h>
+#include <stdio.h>
+ 
+int main(int argc, char *argv[]) {
+   MPI_Init(&argc, &argv);
+ 
+   int rank;
+   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+   int data = 100;
+   MPI_Request request;
+ 
+   if (rank == 0) {
+       MPI_Isend(&data, 1, MPI_INT, 1, 0, MPI_COMM_WORLD, &request);
+   } else if (rank == 1) {
+       MPI_Irecv(&data, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &request);
+   }
+ 
+   printf("Rank %d: Data = %d\n", rank, data);
+ 
+   MPI_Finalize();
+   return 0;
+}
+The program might deadlock.
+
+Correct:
+
+Data might not be transferred correctly without MPI_Wait.
+
+Correct answer
+MPI_Irecv should be MPI_Recv.
+
+The code is correct and will run without any issues.
+
+MPI_Isend should be MPI_Send.
+
+Feedback
+Correct! Without MPI_Wait, the data might not be transferred correctly before the print statement.
+
+Question 29
+29
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Consider the following code snippet: 
+
+
+
+#pragma omp parallel for
+
+for (int i = 0; i < 10; i++) {
+
+  printf("Thread %d executes loop iteration %d\n", omp_get_thread_num(), i);
+
+}
+
+Which of the following statements is true about the output of the code?
+
+The code will produce a compilation error.
+
+The omp_get_thread_num() function will always return 0.
+
+Correct:
+
+The loop iterations may be divided among available threads, and the order of the printed messages can vary.
+
+Correct answer
+Only one thread will execute the loop.
+
+Each loop iteration will be executed by a different thread.
+
+Feedback
+The loop iterations may be divided among available threads, and the order of the printed messages can vary. Explanation: The #pragma omp parallel for directive instructs the compiler to distribute the loop iterations among the available threads in the team. Due to parallel execution, the order of the printed messages can be unpredictable.
+
+Question 30
+30
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Which of the following statements correctly explains why the following OpenMP code snippet results in a race condition and how to fix it?
+
+
+
+#include <omp.h>
+#include <stdio.h>
+ 
+int main() {
+   int counter = 0;
+ 
+   #pragma omp parallel for
+   for (int i = 0; i < 1000; i++) {
+       counter++;
+   }
+ 
+   printf("Final Counter: %d\n", counter);
+   return 0;
+}
+Race condition occurs due to insufficient loop iterations. Increase the loop range.
+
+Each thread independently modifies counter, causing unpredictable results. Use #pragma omp parallel for the increment operation.
+
+The code is correctly synchronized and will always print 1000.
+
+Counter overflow causes a race condition; use a larger data type.
+
+Correct:
+
+Each thread independently modifies counter, causing unpredictable results. Use #pragma omp atomic for the increment operation.
+
+Correct answer
+The issue lies with the printf statement. It should be inside the parallel region.
+
+Feedback
+Correct! The race condition occurs because each thread independently modifies the counter, and using #pragma omp atomic will fix it.
+
+Question 31
+31
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+ 
+__shared__ float As[16][16], Bs[16][16];
+int row = blockIdx.y*16 + threadIdx.y;
+int col = blockIdx.x*16 + threadIdx.x;
+float acc = 0;
+for(int k=0;k<Width/16;k++){
+  As[threadIdx.y][threadIdx.x] = A[row*Width + (k*16 + threadIdx.x)];
+  Bs[threadIdx.y][threadIdx.x] = B[(k*16 + threadIdx.y)*Width + col];
+  __syncthreads();
+  for(int t=0;t<16;t++) acc += As[threadIdx.y][t]*Bs[t][threadIdx.x];
+  __syncthreads();
+}
+C[row*Width+col]=acc;
+ 
+Which statement is most accurate?
+
+Tiles break coalescing by design.
+
+__syncthreads() is unnecessary here.
+
+Correct:
+
+ Using tiles reduces global loads and improves reuse.
+
+Correct answer
+Shared memory is slower than global memory.
+
+Loads must be atomic to avoid races.
+
+Feedback
+Tiling trades extra shared-memory ops for far fewer global reads; barriers protect reuse.  
+
+Question 32
+32
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+How can you efficiently manage data transfer for this matrix addition in OpenACC?
+
+
+
+void matrixAdd(float A[N][N], float B[N][N], float C[N][N]) {
+   #pragma acc parallel loop
+   for (int i = 0; i < N; i++) {
+       for (int j = 0; j < N; j++) {
+           C[i][j] = A[i][j] + B[i][j];
+       }
+   }
+}
+Correct:
+
+#pragma acc data copyin(A, B) copyout(C)
+
+Correct answer
+#pragma acc data copyin(C) copyout(A, B)
+
+#pragma acc data present(A, B, C)
+
+#pragma acc data copy(A, B, C)
+
+#pragma acc data copyout(A, B, C)
+
+Feedback
+The #pragma acc data copyin(A, B) copyout(C) directive transfers matrices A and B to the device and copies the result matrix C back to the host, optimizing data management for parallel execution.
+
+Question 33
+33
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+ 
+__global__ void saxpy(int n, float a, const float* x, float* y){
+  int i = blockIdx.x*blockDim.x + threadIdx.x;
+  if(i<n) y[i] = a*x[i] + y[i];
+}
+ 
+You must launch this for n=1<<20. What’s a safe launch?
+
+<<<(n/32),32>>>
+
+<<<n,1>>>
+
+<<<1024,1024>>>
+
+<<<1,1024>>>
+
+Correct:
+
+<<<(n+255)/256,256>>>
+
+Correct answer
+Feedback
+Uses a grid large enough to cover all n with a bounds check; this is the slide’s canonical grid/block pattern.
+
+Question 34
+34
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Which OpenACC directive would you use to ensure that a nested loop over a two-dimensional array is efficiently parallelized across available GPU resources, and why?
+
+#pragma acc atomic
+
+Correct:
+
+#pragma acc loop collapse(2)
+
+Correct answer
+#pragma acc serial
+
+#pragma acc parallel
+
+#pragma acc data copy
+
+Feedback
+The #pragma acc loop collapse(2) directive is used to combine the iterations of nested loops into a single loop, maximizing parallel execution by allowing both loops to be executed concurrently across available GPU cores. This approach increases parallelism and can significantly improve performance for operations on two-dimensional arrays.
+
+Question 35
+35
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Within a parallel region, declared variables are by default ________ 
+
+Private
+
+Local
+
+Loco
+
+Correct:
+
+Shared
+
+Correct answer
+Question 36
+36
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Consider a weather modeling application that requires high-resolution simulations. Which GPU features are most beneficial for this application, and how do they contribute to performance?
+
+Correct:
+
+Massive parallelism and high memory bandwidth, allowing simultaneous processing of vast amounts of data.
+
+Correct answer
+Branch prediction and out-of-order execution.
+
+High single-thread performance and low-latency caches.
+
+Large memory capacity and complex control logic.
+
+Integrated graphics and real-time rendering capabilities.
+
+Feedback
+For weather modeling, the GPU's ability to process thousands of threads concurrently (massive parallelism) and its high memory bandwidth are crucial. These features enable efficient handling of large datasets and complex simulations, leading to more accurate and timely weather predictions.
+
+Question 37
+37
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Which MPI function is utilized for sending a message from one process to another specific process in a point-to-point communication manner?
+
+MPI_Gather()
+
+Correct:
+
+MPI_Send()
+
+Correct answer
+MPI_Reduce()
+
+MPI_Scatter()
+
+MPI_Bcast()
+
+Feedback
+MPI_Send() Explanation: MPI_Send() is a basic point-to-point communication function that sends a message from the calling process to a designated receiving process.
+
+Question 38
+38
+True/False
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+The following code will result in a data race:
+
+9. #pragma omp parallel for 
+
+10. for (i=1; i < 10; i++) 
+
+11. { 
+
+12. factorial[i] = i * factorial[i-1]; 
+
+13. } 
+
+T
+True
+Correct answer
+F
+False
+Question 39
+39
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Given a weather modeling application that simulates temperature changes across a grid, identify which part of the code would benefit most from OpenMP parallelization and explain why.
+
+
+
+void simulate_temperature(float *grid, int size) {
+   for (int i = 0; i < size; i++) {
+       grid[i] += 0.1; // Simplified temperature update
+   }
+}
+The entire function, as it can run independently across grid points.
+
+The function header, for better modularity.
+
+Correct:
+
+Only the loop, as updating each grid point is an independent operation.
+
+Correct answer
+Parallelization is unnecessary due to the simplicity of computation.
+
+Parallelization is not suitable due to data dependency.
+
+Feedback
+Correct! Only the loop would benefit most from parallelization since each grid point's update is independent.
+
+Question 40
+40
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+In the context of collective communication in MPI, what does the MPI_Reduce() function do?
+
+Gathers data from all processes and distributes it back to all
+
+Distributes data from one process to all other processes
+
+Sends a message from one process to another
+
+Correct:
+
+Applies a reduction operation on all processes and stores the result in one process
+
+Correct answer
+Gathers data from all processes to one process without applying any operation
+
+Feedback
+Applies a reduction operation on all processes and stores the result in one process Explanation: MPI_Reduce() takes an array of input elements from each process, and returns an array of reduced elements to the root process. The reduction operation (e.g., sum, max) is applied element-wise to the input arrays.
+
+Question 41
+41
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+You are developing a high-performance computing (HPC) application for real-time data processing, where multiple data streams are processed concurrently. OpenMP is used to manage the workload effectively across available cores.
+
+
+
+Evaluate the code and suggest the best strategy for using OpenMP to balance the workload and ensure timely processing of data streams.
+
+
+
+#include <omp.h>
+#include <stdio.h>
+ 
+#define NUM_STREAMS 10
+#define DATA_PER_STREAM 1000
+ 
+void process_stream(int stream_id, int data[DATA_PER_STREAM]) {
+   // Simulate data processing
+   for (int i = 0; i < DATA_PER_STREAM; i++) {
+       data[i] *= 2;
+   }
+   printf("Stream %d processed\n", stream_id);
+}
+ 
+int main() {
+   int data_streams[NUM_STREAMS][DATA_PER_STREAM];
+ 
+   // Initialize data streams with random values
+   for (int i = 0; i < NUM_STREAMS; i++) {
+       for (int j = 0; j < DATA_PER_STREAM; j++) {
+           data_streams[i][j] = j;
+       }
+   }
+ 
+   for (int i = 0; i < NUM_STREAMS; i++) {
+       process_stream(i, data_streams[i]);
+   }
+ 
+   return 0;
+}
+Correct:
+
+Use #pragma omp parallel for to parallelize processing of each stream, ensuring all streams are handled simultaneously.
+
+Correct answer
+Use #pragma omp single to avoid contention and improve data coherence.
+
+Apply #pragma omp sections for processing independent data chunks within each stream.
+
+Rely on operating system scheduling instead of OpenMP for real-time performance.
+
+Implement #pragma omp task for dynamic scheduling of stream processing.
+
+Feedback
+Correct! The best strategy is using #pragma omp parallel for to parallelize processing of each stream.
+
+Question 42
+42
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+ 
+__global__ void histo(const unsigned char* buf,int n,int* H){
+  int i=blockIdx.x*blockDim.x+threadIdx.x;
+  if(i<n){
+    unsigned char v=buf[i];
+    /* UPDATE BIN v */
+  }
+}
+ 
+Pick the minimal correct fix:
+
+__syncthreads() before/after update
+
+ Use __threadfence()
+
+H[v]++; is fine per warp
+
+Correct:
+
+atomicAdd(&H[v],1);
+
+Correct answer
+ Make Hvolatile
+
+Feedback
+ Multiple threads hit the same bin; atomics ensure read–modify–write correctness as stressed in the CUDA basics.
+
+Question 43
+43
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+A financial firm is running a Monte Carlo simulation using MPI to estimate risk factors. Each process generates random numbers to simulate different market scenarios and computes the average loss. After computation, the firm needs to calculate the global average loss across all processes. What approach should be used to ensure an accurate and efficient calculation?
+
+Each process sends its average loss to a master process, which computes the global average.
+
+Correct:
+
+Use MPI_Allreduce with MPI_SUM to sum the average losses and divide by the number of processes.
+
+Correct answer
+Each process computes the global average using MPI_Bcast to distribute individual results.
+
+Use MPI_Allgather to collect average losses from all processes and compute the average on each process.
+
+Use MPI_Reduce with MPI_AVG to compute the global average loss directly.
+
+Feedback
+Correct! MPI_Allreduce with MPI_SUM is the right approach for calculating the global average loss.
+
+Question 44
+44
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Consider the following pseudocode using MPI for a scatter operation. What does the MPI_Scatter function achieve in this context?
+
+
+
+MPI_Init()
+rank = MPI_Comm_rank()
+size = MPI_Comm_size()
+ 
+if rank == 0:
+   data = [1, 2, 3, 4, 5, 6, 7, 8]
+else:
+   data = None
+ 
+recv_data = allocate_memory(size)
+ 
+MPI_Scatter(data, 1, MPI_INT, recv_data, 1, MPI_INT, 0, MPI_COMM_WORLD)
+ 
+print("Rank", rank, "received", recv_data)
+ 
+MPI_Finalize()
+Gathers data from all processes to the root process.
+
+Reduces data from all processes to a single value.
+
+Synchronizes all processes before data distribution.
+
+Correct:
+
+Distributes chunks of the data array to all processes.
+
+Correct answer
+Broadcasts the entire data array to all processes.
+
+Feedback
+Correct! MPI_Scatter distributes chunks of the data array to all processes.
+
+Question 45
+45
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Each rank holds local_N elements; we want global_sum at root:
+
+ 
+double sum = 0.0, global_sum = 0.0;
+/* ... local sum over my block ... */
+MPI_Reduce(&sum, &global_sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+if (rank==0) printf("%f\n", global_sum);
+ 
+Which is most accurate?
+
+Use MPI_Allreduce or reductions are undefined.
+
+Correct:
+
+count=1 is right (reduce a scalar sum), and result only at root.
+
+Correct answer
+MPI_Reduce requires matching tags.
+
+Need count=local_N in MPI_Reduce.
+
+Must broadcast global_sum before printing.
+
+Feedback
+You already reduced the scalar partial sum; count=1 is correct. The slides show exactly this pattern for parallel sums. Use Allreduce only if all ranks need the result.
+
+Question 46
+46
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Consider the following MPI code that defines a custom data type. What will be the output when the program is executed with 2 processes?
+
+ 
+#include <mpi.h>
+#include <stdio.h>
+#include <stddef.h>
+ 
+struct Particle {
+   int id;
+   double mass;
+   char type;
+};
+ 
+int main(int argc, char *argv[]) {
+   MPI_Init(&argc, &argv);
+ 
+   int rank;
+   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+ 
+   MPI_Datatype particle_type;
+   int block_lengths[3] = {1, 1, 1};
+   MPI_Aint displacements[3];
+   MPI_Datatype types[3] = {MPI_INT, MPI_DOUBLE, MPI_CHAR};
+ 
+   displacements[0] = offsetof(struct Particle, id);
+   displacements[1] = offsetof(struct Particle, mass);
+   displacements[2] = offsetof(struct Particle, type);
+ 
+   MPI_Type_create_struct(3, block_lengths, displacements, types, &particle_type);
+   MPI_Type_commit(&particle_type);
+ 
+   struct Particle my_particle;
+   if (rank == 0) {
+       my_particle.id = 1;
+       my_particle.mass = 2.5;
+       my_particle.type = 'A';
+       MPI_Send(&my_particle, 1, particle_type, 1, 0, MPI_COMM_WORLD);
+   } else if (rank == 1) {
+       MPI_Recv(&my_particle, 1, particle_type, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+       printf("Received Particle: id=%d, mass=%f, type=%c\n", my_particle.id, my_particle.mass, my_particle.type);
+   }
+ 
+   MPI_Type_free(&particle_type);
+   MPI_Finalize();
+   return 0;
+}
+Received Particle: id=0, mass=0.0, type=A
+
+Received Particle: id=1, mass=2.5, type=B
+
+Received Particle: id=1, mass=0.0, type=B
+
+The program will not compile due to errors in type handling.
+
+Correct:
+
+Received Particle: id=1, mass=2.5, type=A
+
+Correct answer
+Feedback
+Correct! The program will print "Received Particle: id=1, mass=2.5, type=A" on Rank 1.
+
+Question 47
+47
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+A company is using a hybrid model with MPI and OpenMP for a large-scale simulation. What is the primary benefit of using this hybrid approach?
+
+Simplifies memory management
+
+Reduces need for explicit synchronization
+
+Correct:
+
+Optimizes both inter-node and intra-node parallelism
+
+Correct answer
+Increases single-threaded performance
+
+Enhances load balancing across nodes
+
+Feedback
+Correct! The hybrid model optimizes both inter-node and intra-node parallelism.
+
+Question 48
+48
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+ You are working on an image processing application that applies a 3x3 Gaussian blur filter to a large image. Given the size of the image, you decide to parallelize the process using OpenMP to improve performance.
+
+Analyse the following code and determine the most efficient way to parallelize the convolution operation to ensure optimal performance and resource utilization.
+
+#include <omp.h>
+#include <stdio.h>
+ 
+#define WIDTH 1920
+#define HEIGHT 1080
+#define KERNEL_SIZE 3
+ 
+void apply_gaussian_blur(double **image, double **output, double kernel[KERNEL_SIZE][KERNEL_SIZE]) {
+   for (int y = 1; y < HEIGHT - 1; y++) {
+       for (int x = 1; x < WIDTH - 1; x++) {
+           double sum = 0.0;
+           for (int ky = 0; ky < KERNEL_SIZE; ky++) {
+               for (int kx = 0; kx < KERNEL_SIZE; kx++) {
+                   int ix = x + kx - 1;
+                   int iy = y + ky - 1;
+                   sum += image[iy][ix] * kernel[ky][kx];
+               }
+           }
+           output[y][x] = sum;
+       }
+   }
+}
+ 
+int main() {
+   // Image and kernel initialization code here
+ 
+   apply_gaussian_blur(image, output, kernel);
+ 
+   return 0;
+}
+Use #pragma omp sections to split different sections of the image processing task, improving task parallelism.
+
+Correct:
+
+Use #pragma omp parallel for collapse(2) before the outer loops to distribute iterations evenly across threads, improving data locality and cache usage.
+
+Correct answer
+No parallelization is needed as the workload is balanced enough.
+
+Use #pragma omp single to ensure only one thread processes the entire image, minimizing overhead.
+
+Use #pragma omp parallel for before the innermost loop, enhancing parallelism but potentially increasing cache misses.
+
+Feedback
+Correct! The most efficient way to parallelize the operation is using #pragma omp parallel for collapse(2).
+
+Question 49
+49
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Given the code below, explain the output and how OpenMP tasks improve load balancing for this irregular workload.
+
+
+
+#include <omp.h>
+#include <stdio.h>
+ 
+void process(int id) {
+   printf("Processing task %d\n", id);
+}
+ 
+int main() {
+   #pragma omp parallel
+   {
+       #pragma omp single
+       {
+           for (int i = 0; i < 8; i++) {
+               #pragma omp task
+               {
+                   process(i);
+               }
+           }
+       }
+   }
+ 
+   return 0;
+}
+Produces no output due to incorrect task creation syntax.
+
+Outputs tasks processed in order of creation, demonstrating sequential execution.
+
+Correct:
+
+Tasks are processed concurrently, but completion order is undefined, demonstrating dynamic scheduling.
+
+Correct answer
+Results in deadlock due to improper task synchronization.
+
+Outputs all tasks as "Processing task 0", due to task number error.
+
+Feedback
+Correct! Tasks are processed concurrently, but the completion order is undefined, demonstrating dynamic scheduling.
+
+Question 50
+50
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+What output will the following MPI program produce if run with 4 processes?
+
+
+
+#include <mpi.h>
+#include <stdio.h>
+ 
+int main(int argc, char *argv[]) {
+   MPI_Init(&argc, &argv);
+ 
+   int rank, size;
+   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+   MPI_Comm_size(MPI_COMM_WORLD, &size);
+ 
+   int data = rank;
+   int gathered[4] = {0};
+ 
+   MPI_Gather(&data, 1, MPI_INT, gathered, 1, MPI_INT, 0, MPI_COMM_WORLD);
+ 
+   if (rank == 0) {
+       printf("Gathered data: %d %d %d %d\n", gathered[0], gathered[1], gathered[2], gathered[3]);
+   }
+ 
+   MPI_Finalize();
+   return 0;
+}
+Rank 0 prints: "Gathered data: 3 2 1 0"
+
+Correct:
+
+Rank 0 prints: "Gathered data: 0 1 2 3"
+
+Correct answer
+Rank 0 prints zeros only
+
+Each rank prints its own data
+
+All ranks print gathered data
+
+Feedback
+Correct! Rank 0 will print: "Gathered data: 0 1 2 3".
