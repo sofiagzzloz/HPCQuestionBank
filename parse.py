@@ -160,7 +160,8 @@ def truncate_cells(df, max_len=49000):
 # 🧠 MUCH BETTER PARSER
 # ----------------------------------------------------------
 def parse_question_file(filepath):
-    text = open(filepath, "r", encoding="utf-8", errors="ignore").read()
+    with open(filepath, "r", encoding="utf-8", errors="ignore") as handle:
+        text = handle.read()
     text = text.replace("\r", "\n")
 
     blocks = re.split(r"\n(?=Question\s*\d+\b)", text)
@@ -237,6 +238,7 @@ def main():
         )
 
     unique_questions = combined[first_occurrence_mask].copy()
+    unique_questions["Unique"] = True
     if unique_questions.empty:
         print("⚠️ No unique questions available after de-duplication.")
         return
