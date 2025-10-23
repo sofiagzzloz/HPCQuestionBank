@@ -1,0 +1,1374 @@
+1
+Multiple Choice
+INCORRECT
+0
+/
+10
+Grade: 0 out of 10 points possible
+What is true about this image? (Multiple correct answers)
+
+Slurm_partitions.jpg
+
+
+Correct:
+
+20-node cluster that has been partitioned into two disjoint node sets, Partition 1 and Partition 2
+
+Correct answer
+Correct:
+
+Job 1 has been assigned all nodes in Partition 1 and all are currently utilized by Job Step 1
+
+Correct answer
+Incorrect:
+
+Remaining three nodes in Partition 2 could not be allocated to another job
+
+Correct:
+
+In Partition 2, the scheduler designated only 9 out of 12 available nodes for Job 2, and 8 of them are in use by two concurrent job steps, Job Steps 5 and 6
+
+Correct answer
+Feedback
+The image depicts a 20-node cluster split into two partitions, with jobs assigned accordingly. The description details how resources are allocated and utilized within each partition.
+
+Correct Answers:
+
+A. 20-node cluster that has been partitioned into two disjoint node sets, Partition 1 and Partition 2
+
+B. Job 1 has been assigned all nodes in Partition 1 and all are currently utilized by Job Step 1
+
+C. In Partition 2, the scheduler designated only 9 out of 12 available nodes for Job 2, and 8 of them are in use by two concurrent job steps, Job Steps 5 and 6
+
+Explanation: The image depicts a 20-node cluster split into two partitions, with jobs assigned accordingly. The description details how resources are allocated and utilized within each partition.
+
+Question 2
+2
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Imagine a user needs to run a job that requires 4 nodes and 32 tasks with 8 tasks on each node. Which of the following Slurm commands correctly specifies this requirement?
+
+Correct:
+
+srun -N4 -n32 --ntasks-per-node=8 job_script.sh
+
+Correct answer
+srun -N8 -n4 --ntasks-per-node=32 job_script.sh
+
+srun -N4 --ntasks-per-node=32 job_script.sh
+
+srun -N32 -n4 --ntasks-per-node=8 job_script.sh
+
+srun -N4 -n8 --ntasks-per-node=32 job_script.sh
+
+Feedback
+Correct! The command specifies 4 nodes with 32 tasks, distributed so that each node handles 8 tasks.
+
+Question 3
+3
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+A biomedical research institute is analyzing complex protein folding patterns. The process involves dense linear algebra calculations. To compare two supercomputers for potential acquisition, which benchmark would be the most relevant?
+
+Von Neumann benchmark
+
+Moore's performance rate
+
+SIMD performance metric
+
+Correct:
+
+HPL or "Linpack" benchmark for dense linear algebra: a measure of a system's floating-point computing power.
+
+Correct answer
+System stack throughput test
+
+Feedback
+The HPL or "Linpack" benchmark is specifically designed for dense linear algebra and would be the most relevant in this case.
+
+Question 4
+4
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+What is true about von Neumann architecture?
+
+Correct:
+
+Operation of the processor is managed by the controller 
+
+Correct answer
+25%
+Correct:
+
+Define in the 1940s the modern architecture for computers
+
+Correct answer
+25%
+The ALU (arithmetic logic unit) stores memory
+
+0%
+Correct:
+
+Uses an ALU, registers, processor and main memory
+
+Correct answer
+25%
+Correct:
+
+A load operation reads a word from memory and places its value into a register, to be used by the ALU
+
+Correct answer
+25%
+Question 5
+5
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+What is true about Sustained performance? (Multiple selection)
+
+Maximum rate at which operations can be accomplished theoretically by the hardware resources of a supercomputer
+
+0%
+Correct:
+
+While sustained performance cannot exceed peak performance, it can be much less and often is
+
+Correct answer
+33.33%
+Correct:
+
+Actual or real performance achieved by a supercomputer system in the performance of an application program
+
+Correct answer
+33.33%
+Correct:
+
+Sustained performance is considered a better indicator of the true value of a supercomputer than its specified peak performance
+
+Correct answer
+33.33%
+Peak performance is considered a better indicator of the true value of a supercomputer than its specified sustained performance
+
+0%
+Feedback
+Sustained performance is the actual or real performance achieved by a supercomputer system in running an application program. While sustained performance cannot exceed peak performance, it can be much less and often is. Throughout the period of computation the instantaneous performance can vary, sometimes quite dramatically depending on a number of variable circumstances determined by both the system itself and the immediate requirements of the application code. Sustained performance represents the total average performance of an application derived from the total number of operations performed during the entire program execution and the time required to complete the program, sometimes referred to as “wall clock time” or “time to solution”. Like peak performance, it may be represented in terms of a particular unit (kind of operation) of interest, such as floating-point operations, or it can include all types of operations available by the computing system, such as integers (of different sizes), memory load and stores, and conditionals.
+
+Sustained performance is considered a better indicator of the true value of a supercomputer than its specified peak performance. But because it is highly sensitive to variations in the workload, comparison of different systems only has meaning if they are measured running equivalent applications. Benchmarks are specific programs created for this purpose. Many different benchmarks reflect different classes of problems. The Linpack or HPL benchmark is one such application used to compare supercomputers: it is widely employed and referenced, and is the baseline for the Top 500 list that tracks the fastest computers in the world (at least those so measured) on a semiannual basis.
+
+Question 6
+6
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+What are the key properties that determine performance of an HPC architecture and used in P=e×S×a(R)×μ(E)?
+
+Access, Latency, Overconsumption and Waiting
+
+Correct:
+
+Speed of components, parallelism and efficiency
+
+Correct answer
+Security Threats, Latency, Overconsumption and Waiting 
+
+Access, Latency, Overconsumption and efficiency
+
+Feedback
+speed of the components comprising the system, 
+
+parallelism or number of components that can operate concurrently 
+
+efficiency of use of those components in the degree of utilization achieved
+
+Question 7
+7
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+What is true about Reliability? (there are multiple answers)
+
+Correct:
+
+“Soft” fault is when a part intermittently fails but otherwise operates correctly.
+
+Correct answer
+33.33%
+Correct:
+
+The bigger the system, the most faults will have. 
+
+Correct answer
+33.33%
+“Soft” fault a when the Software brakes permanently 
+
+0%
+We can use checkpoint/restart to prevent software errors
+
+0%
+Correct:
+
+“Hard” faults is when a part of the hardware breaks permanently
+
+Correct answer
+33.33%
+Question 8
+8
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+A research team is running climate modeling simulations that require significant computational resources. They have decided to use a hybrid cloud strategy to handle peak workloads. Which tools and techniques would best support their needs, and why?
+
+Use Google Cloud Preemptible VMs for cost-effective computing
+
+Use Docker containers for all their workloads
+
+Correct:
+
+Use AWS ParallelCluster for managing and scaling HPC clusters
+
+Correct answer
+Use IBM Watson for predictive analysis
+
+Use Azure Blob Storage for storing climate data
+
+Feedback
+Correct! AWS ParallelCluster is best suited for managing and scaling HPC clusters in a hybrid cloud strategy.
+
+Question 9
+9
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+What is true about FLOPS?
+
+Correct:
+
+Stands for Floating-point operations per second
+
+Correct answer
+33.33%
+Correct:
+
+is an addition or multiplication of two real (or floating-point) numbers 
+
+Correct answer
+33.33%
+Correct:
+
+We uses the greek prefixes kilo, mega, giga, tera, and peta to represent 1000, 1 million, 1 billion, 1 trillion, and 1 quadrillion
+
+Correct answer
+33.33%
+Incorrect:
+
+Stands for Floating-Point OperationS
+
+0%
+is an addition or multiplication of two integer numbers represented
+
+0%
+Question 10
+10
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+In the context of hybrid cloud strategies for HPC, what role does a tool like AWS Direct Connect play?
+
+Correct:
+
+It offers dedicated, high-speed connectivity between on-premises and AWS
+
+Correct answer
+It provides a high-performance computing instance
+
+It manages cost and budget for HPC resources
+
+It facilitates job scheduling across different HPC clusters
+
+It automates the deployment of containerized applications
+
+Feedback
+Correct! AWS Direct Connect offers dedicated, high-speed connectivity between on-premises and AWS in hybrid cloud strategies.
+
+Question 11
+11
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Which component of the HPC Challenge Benchmark Suite is best suited for measuring the sustainable memory bandwidth of an HPC system?
+
+FFT
+
+DeepBench
+
+Correct:
+
+STREAM
+
+Correct answer
+HPL
+
+RandomAccess
+
+Feedback
+Correct! STREAM is specifically designed to measure sustainable memory bandwidth.
+
+Question 12
+12
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+A biotech company is using Singularity containers for HPC workloads on a SLURM-managed cluster. They need to ensure the reproducibility of their bioinformatics pipelines. How should they create and manage these containers, and what are the benefits?
+
+Use Azure Batch for container management
+
+Use bare metal servers for maximum performance
+
+Use Docker containers with Kubernetes
+
+Correct:
+
+Create Singularity containers using a definition file and manage them with SLURM
+
+Correct answer
+Use Google Cloud AI Platform for container orchestration
+
+Feedback
+Correct! Creating Singularity containers using a definition file and managing them with SLURM ensures reproducibility and efficiency in HPC environments.
+
+Question 13
+13
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Which of the following best describes the primary function of Infrastructure as a Service (IaaS) in HPC?
+
+Provides platforms for developing, running, and managing HPC applications
+
+Manages containerized applications across multiple cloud providers
+
+Delivers pre-configured environments for specific HPC applications
+
+Offers HPC applications over the internet with pay-per-use pricing
+
+Correct:
+
+Provides virtualized computing resources over the internet on a pay-as-you-go basis
+
+Correct answer
+Feedback
+Correct! IaaS provides virtualized computing resources over the internet on a pay-as-you-go basis.
+
+Question 14
+14
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Order the memory technologies by speed from faster to slower:
+
+DRAM, SRAM, NVRAM, Magnetic storage
+
+Magnetic storage, NVRAM, DRAM, SRAM
+
+Correct:
+
+SRAM, DRAM, NVRAM, Magnetic Storage
+
+Correct answer
+Magnetic storage, NVRAM, DRAM, SRAM
+
+Question 15
+15
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Which use case is best suited for hybrid cloud strategies in HPC?
+
+Ensuring maximum performance with direct hardware access
+
+Correct:
+
+Handling peak computational demands without permanent infrastructure investment
+
+Correct answer
+Avoiding vendor lock-in by distributing workloads across multiple providers
+
+Performing routine calculations requiring consistent computational power
+
+Running real-time data processing tasks with low latency
+
+Feedback
+Correct! Hybrid cloud strategies are best suited for handling peak computational demands without permanent infrastructure investment.
+
+Question 16
+16
+Multiple Choice
+INCORRECT
+0
+/
+10
+Grade: 0 out of 10 points possible
+What are the four reasons for performance degradation according to the acronym SLOW?
+
+Starvation, Latency, Overhead and Waiting
+
+Correct answer
+Security Threats, Latency, Overconsumption and Waiting 
+
+Slow Access, limited accessibility, Overconsumption and Waiting
+
+Incorrect:
+
+Slow Access, Latency, Overconsumption and Waiting
+
+Question 17
+17
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Your team is tasked with deploying an HPC application that requires high throughput and low-latency networking for a simulation. Which cloud-based HPC instance type would you choose and why?
+
+Google Cloud TPU Instances
+
+Correct:
+
+AWS EC2 C5n Instances
+
+Correct answer
+Google Cloud GKE Instances
+
+AWS LightSail Instances
+
+Microsoft Azure A-Series Instances
+
+Feedback
+Correct! AWS EC2 C5n Instances are recommended for high throughput and low-latency networking in HPC simulations.
+
+Question 18
+18
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+The Oceanography Department of a university wants to model ocean currents to predict the spread of pollutants. They are looking at the Top 500 list to identify a suitable supercomputer. Why is this list relevant for their decision?
+
+It shows the power consumption of each supercomputer.
+
+Correct:
+
+The list is updated biannually and ranks supercomputers based on a system's floating-point computing power using the HPL or “Linpack” benchmark.
+
+Correct answer
+It lists supercomputers based on their size and weight.
+
+The list showcases the price of the top supercomputers.
+
+The list ranks computers according to Moore's Law.
+
+Feedback
+The Top 500 list, updated twice a year, ranks supercomputers based on their performance running the HPL or “Linpack” benchmark, making it relevant for assessing a supercomputer's capability for complex simulations like ocean current modeling.
+
+Question 19
+19
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Dr. Thompson is researching the protein structures of a newly discovered virus. He needs to run simulations involving millions of atoms and requires a system that can handle multiple sets of instructions on multiple data points. According to Flynn's Taxonomy, which type of parallelism should Dr. Thompson's HPC system employ for his research?
+
+MISD
+
+SISD
+
+SIMD
+
+Correct:
+
+MIMD
+
+Correct answer
+SISD-MIMD
+
+Feedback
+MIMD (Multiple instructions operating on multiple data points) allows each processor to execute different instructions on different sets of data concurrently, which would be suitable for Dr. Thompson's intricate simulations.
+
+Question 20
+20
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+BioTech Inc. is working on simulating the human brain. This project requires significant memory and processing power. Knowing that the company is going to require enhanced computational abilities soon, what would be a recommendation in light of Moore's law?
+
+Focus on SIMD array systems.
+
+Just upgrade the current software without changing the hardware.
+
+Correct:
+
+Invest in a supercomputer with multicore petaflops architecture: a system with the ability to perform a large number of floating-point calculations simultaneously.
+
+Correct answer
+Acquire multiple low-powered computers now.
+
+Wait for two years before buying any new supercomputer.
+
+Feedback
+With the human brain simulation's vast requirements, investing in a supercomputer with multicore petaflops architecture would be forward-thinking.
+
+Question 21
+21
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Caroline, a data scientist, has been given access to an HPC cluster for her deep learning experiments. For her initial tests, she wants to run her TensorFlow training script on a GPU node. Which of the following Slurm commands would be appropriate for her to request a GPU node?
+
+srun --resource=gpu tensorflow_script.sh
+
+sbatch --gpu tensorflow_script.sh
+
+srun --gpus=1 tensorflow_script.sh
+
+Correct:
+
+srun --gres=gpu:1 tensorflow_script.sh
+
+Correct answer
+srun --request-gpu tensorflow_script.sh
+
+Feedback
+Correct! Caroline can use the --gres=gpu:1 option to request a GPU node for her TensorFlow script.
+
+Question 22
+22
+Multiple Choice
+INCORRECT
+0
+/
+10
+Grade: 0 out of 10 points possible
+What is true about the HPL benchmark? (Multiple correct answers)
+
+Correct:
+
+The HPL benchmark is used for ranking supercomputers in the Top 500 list
+
+Correct answer
+Correct:
+
+The Linpack benchmark provides an estimate of a system's effective floating-point performance
+
+Correct answer
+Early versions of the HPL include the floating-point-intensive Whetstone benchmark and the integer-oriented Dhrystone benchmark
+
+Correct:
+
+The Linpack benchmark solves a dense, regular system of linear equations
+
+Correct answer
+HPL is part of the HPC Challenge benchmark suite that contains seven widely used HPC benchmarks
+
+Correct answer
+Feedback
+The HPL benchmark is a key tool in HPC for evaluating floating-point performance and is used for the Top 500 list. It is part of the broader HPC Challenge suite.
+
+Question 23
+23
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+A university research team is working on a project that requires running millions of Monte Carlo simulations for financial risk analysis. They have decided to use cloud resources to complement their on-premises HPC infrastructure. Which setup would you recommend to optimize cost and performance, and why?
+
+Use Google Cloud TPU VMs for all simulations
+
+Use IBM Watson for AI-driven insights
+
+Use Docker containers for running simulations
+
+Correct:
+
+Use AWS EC2 Spot Instances for cost-effective computation during peak loads
+
+Correct answer
+Use Azure Blob Storage for storing simulation data
+
+Feedback
+Correct! AWS EC2 Spot Instances are recommended for cost-effective computation during peak loads.
+
+Question 24
+24
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Alice is working on a climate modeling project and has three large simulation tasks to run. Each simulation requires 10 nodes. She wants to ensure that if one simulation fails, it doesn't impact the others. Which of the following Slurm commands should she use to submit these simulations?
+
+srun -N30 simulation1.sh simulation2.sh simulation3.sh
+
+srun -N10 simulation1.sh; srun -N10 simulation2.sh; srun -N10 simulation3.sh
+
+srun -N10 simulation1.sh & srun -N10 simulation2.sh & srun -N10 simulation3.sh
+
+sbatch -N10 simulation1.sh && sbatch -N10 simulation2.sh && sbatch -N10 simulation3.sh
+
+Correct:
+
+sbatch --array=1-3 -N10 simulation.sh
+
+Correct answer
+Feedback
+Correct! The sbatch --array option allows Alice to submit independent jobs in a single command.
+
+Question 25
+25
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+What is true about Commodity Cluster?
+
+Correct:
+
+Provides economy of scale to increase performance to cost dramatically compared to custom-designed MPPs of the same scale
+
+Correct answer
+33.33%
+Examples are Touchstone Paragon (1994), the Thinking Machines Corporation CM-5 (1992), and the IBM SP-2
+
+0%
+Correct:
+
+is a form of HPC assembled from commercially manufactured subsystems
+
+Correct answer
+33.33%
+Correct:
+
+cluster “node” is a computer that can be directly employed individually as a PC
+
+Correct answer
+33.33%
+Question 26
+26
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+When assessing the performance of supercomputers using the Top 500 list, which benchmark is primarily used?
+
+HPC linear algebra
+
+SIMD array evaluation
+
+Moore's benchmark
+
+System stack performance rate
+
+Correct:
+
+HPL or "Linpack" benchmark for dense linear algebra
+
+Correct answer
+Feedback
+The Top 500 list ranks supercomputers based on their performance running the HPL or "Linpack" benchmark for dense linear algebra.
+
+Question 27
+27
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Let's say you're using Google Chrome, a popular web browser. When you open a new web page, the browser processes multiple tasks like fetching data, rendering images, and playing videos. To boost efficiency, modern CPUs process several instructions related to these tasks concurrently but in different stages. What is this technique called?
+
+Video Streaming
+
+HTML Parsing
+
+Web Lining
+
+Data Mining
+
+Correct:
+
+Pipelining
+
+Correct answer
+Feedback
+Pipelining is a CPU technique where instruction processing is divided into stages, permitting multiple instructions to be processed at the same time as they navigate through the pipeline stages.
+
+Question 28
+28
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+With the potential end of Moore's law in sight, which epoch of supercomputing evolution reflects a possible direction for HPC architecture?
+
+Correct:
+
+Multicore petaflops
+
+Correct answer
+Von Neumann architecture in vacuum tubes
+
+SIMD arrays
+
+Vector processing
+
+Calculator mechanical technology
+
+Feedback
+As technology advances, multicore petaflops and advancements in parallel processing represent a possible direction for HPC architecture, especially in the context of the limitations implied by the end of Moore's law.
+
+Question 29
+29
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+What srun command has been sent for this execution:
+
+srun –n6 –c2 –m’block:block’ my_app
+
+srun –n6 –c2 –mplane=2:fcyclic,NoPack my_app
+
+srun –wnode0[4-6],node08 –N6 my_app
+
+A srun command is submitted on a machine equipped with dual quad-core processors (each core supporting a single thread of execution), two nodes will be allocated for the job. Assuming the first socket of node 0 includes cores numbered 0–3 and the second cores 4–7, task 0 will run on cores 0 and 1, task 1 on cores 4 and 5, task 2 on cores 2 and 3, and task 3 on cores 6 and 7. The remaining tasks will be instantiated on node 1, with task 4 using cores 0 and 1 and task 5 cores 4 and 5.
+
+Correct:
+
+srun –n6 –c2 –m’block:cyclic’ my_app
+
+Correct answer
+Feedback
+Correct! The command specifies that 6 tasks will be run with 2 cores per task in a cyclic manner across the nodes.
+
+Question 30
+30
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Select the correct words:
+
+HPC architecture exploits its enabling technologies to _______ time to solution, ________throughput of operation, and serve the class of computations associated with ________, usually ______-intensive, applications.
+
+Maximize, Maximize, large , data
+
+Correct:
+
+Minimize, Maximize, large, numeric
+
+Correct answer
+Maximize, Minimize, large , data
+
+Maximize, Minimize, small , numeric
+
+Question 31
+31
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+What is the main difference between Platform as a Service (PaaS) and Infrastructure as a Service (IaaS) in the context of HPC?
+
+IaaS provides a pay-as-you-go pricing model, while PaaS does not
+
+Correct:
+
+PaaS offers pre-configured environments for HPC applications, while IaaS provides virtualized hardware resources
+
+Correct answer
+PaaS provides hardware resources, while IaaS provides software applications
+
+PaaS requires higher upfront costs compared to IaaS
+
+IaaS is used for job scheduling, while PaaS is for container management
+
+Feedback
+Correct! PaaS offers pre-configured environments for HPC applications, while IaaS provides virtualized hardware resources.
+
+Question 32
+32
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+In the context of the von Neumann architecture, what is the limitation where the speed of operations is constrained by the rate of data transfer between the CPU and memory?
+
+Correct:
+
+von Neumann Bottleneck
+
+Correct answer
+Cache Miss
+
+Pipeline Stalling
+
+CPU Throttling
+
+Memory Leak
+
+Feedback
+The von Neumann bottleneck describes the inherent constraint of the von Neumann architecture, where the system's performance can be hampered by the limited rate of data transfer between the CPU and the memory.
+
+Question 33
+33
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Historically supercomputers have been applied to science and engineering, and the methodology has been described as the “third pillar of science” alongside and complementing what other pillars?
+
+Experimentation (empiricism) and Simulation
+
+Simulation and Mathematics (theory)
+
+Correct:
+
+Experimentation (empiricism) and Mathematics (theory)
+
+Correct answer
+Empiricism and Simulation 
+
+Question 34
+34
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+A bioinformatics researcher needs to ensure that their analysis pipeline is reproducible across different HPC systems. Which technology should they use and why?
+
+Virtual Machines (VMs) because they provide full hardware virtualization
+
+On-premises HPC clusters because they ensure control over resources
+
+Correct:
+
+Singularity containers because they encapsulate entire software environments
+
+Correct answer
+Docker containers because they share the host OS kernel
+
+Bare metal servers because they offer direct hardware access
+
+Feedback
+Correct! Singularity containers encapsulate entire software environments, ensuring reproducibility across different HPC systems.
+
+Question 35
+35
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+A pharmaceutical company is conducting high-throughput drug screening using machine learning models. They need to ensure high performance and fast deployment across different HPC systems. Which containerization technology should they use, and how would it benefit their workflow?
+
+Use Docker for containerization of machine learning models
+
+Use Google Cloud Storage for storing drug screening data
+
+Correct:
+
+Use Singularity for encapsulating machine learning workflows in HPC environments
+
+Correct answer
+Use Azure Batch for job scheduling and resource scaling
+
+Use VMware vSphere for managing virtual machines
+
+Feedback
+Correct! Singularity is recommended for encapsulating machine learning workflows in HPC environments.
+
+Question 36
+36
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+An HPC system needs a comprehensive performance evaluation that includes memory bandwidth, computation power, and data access patterns. Which benchmark suite should be used and why?
+
+Correct:
+
+HPC Challenge Benchmark Suite, because it includes HPL, STREAM, RandomAccess, and FFT.
+
+Correct answer
+DeepBench, because it benchmarks deep learning operations.
+
+HPCG, because it focuses on sparse matrix operations.
+
+STREAM, because it measures memory bandwidth.
+
+HPL, because it measures floating-point computation power.
+
+Feedback
+Correct! The HPC Challenge Benchmark Suite provides a comprehensive evaluation of HPC systems.
+
+Question 37
+37
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+What is one key advantage of using containers like Singularity in HPC environments?
+
+Offers full hardware virtualization
+
+Requires root privileges to run
+
+Increases overhead compared to VMs
+
+Correct:
+
+Provides lightweight, user-level containerization
+
+Correct answer
+Limits flexibility in resource allocation
+
+Feedback
+Correct! Singularity provides lightweight, user-level containerization in HPC environments.
+
+Question 38
+38
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+A company runs a video rendering application where 40% of the task is purely sequential, and the remaining 60% of the task can be parallelized. The IT department upgrades the system to a high-performance setup with 8 cores. Using Amdahl’s Law, what is the maximum possible speedup the company can expect from the new setup?
+
+Correct:
+
+2.1 times
+
+Correct answer
+1.82 times
+
+1.42 times
+
+3.5 times
+
+Feedback
+To calculate the maximum speedup, we use Amdahl's Law, which is expressed as:
+
+﻿﻿S equals fraction numerator 1 over denominator left parenthesis 1 minus P right parenthesis plus P over N end fraction﻿﻿S=(1−P)+NP​1​
+
+Where:
+
+﻿﻿P﻿﻿P is the proportion of the task that can be parallelized (in this case, 60% or 0.6),
+﻿﻿N﻿﻿N is the number of cores (in this case, 8),
+﻿﻿1 minus P﻿﻿1−P represents the portion of the task that remains sequential (in this case, 40% or 0.4).
+Substituting the values:
+
+﻿﻿S equals fraction numerator 1 over denominator left parenthesis 0.4 right parenthesis plus fraction numerator 0.6 over denominator 8 end fraction end fraction equals fraction numerator 1 over denominator 0.4 plus 0.075 end fraction equals fraction numerator 1 over denominator 0.475 end fraction equals 2.1﻿﻿S=(0.4)+80.6​1​=0.4+0.0751​=0.4751​=2.1
+
+Thus, the maximum speedup is 2.1 times.
+
+Question 39
+39
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Amdahl's Law is often cited in the context of SMP. If 20% of a program cannot be parallelized and runs on a single processor, what is the theoretical maximum speedup you can achieve with infinite processors in an SMP system?
+
+Correct:
+
+5x
+
+Correct answer
+10x
+
+4x
+
+Infinite
+
+2x
+
+Feedback
+Correct! The maximum speedup with infinite processors is 5x.
+
+Question 40
+40
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+What is the element that incorporates all the functional elements required for computation, and is highly replicated to achieve large scale in a supercomputer?
+
+Chip
+
+Blade
+
+Core
+
+Correct:
+
+Node
+
+Correct answer
+Rack
+
+Question 41
+41
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Apple's M1 chip is known for its impressive performance in both high-end tasks like video editing and everyday tasks like browsing. The chip contains a combination of high-performance and energy-efficient cores. This diverse mixture of cores on a single chip is an example of what computing structure?
+
+Correct:
+
+Heterogeneous Computing
+
+Correct answer
+Homogeneous Computing
+
+Binary Computing
+
+Singular Computing
+
+Monolithic Computing
+
+Feedback
+Heterogeneous computing involves using different types of processors or cores in a system, each optimized for specific tasks. The M1 chip's combination of high-performance and energy-efficient cores is an embodiment of this concept.
+
+Question 42
+42
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Which of Flynn's taxonomy classifications is described as multiple instructions operating on a single data stream and is rare in practice?
+
+SIPD
+
+SISD
+
+MIMD
+
+SIMD
+
+Correct:
+
+MISD
+
+Correct answer
+Feedback
+MISD represents Multiple Instructions, Single Data. It involves several instructions being executed on a single data stream, making it a rare practical application in the real world.
+
+Question 43
+43
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+A biotech startup needs to perform large-scale genomics analysis using a bioinformatics pipeline. They decide to use Singularity containers to ensure reproducibility and portability. How would they create, run, and manage these containers in an HPC environment, and why is this approach advantageous?
+
+Use Google Cloud Preemptible VMs for cost savings
+
+Run the analysis directly on bare metal servers for maximum performance
+
+Correct:
+
+Build Docker images and convert them to Singularity images using singularity build
+
+Correct answer
+Use VMware vSphere for managing virtual machines
+
+Use Azure CycleCloud for HPC cluster management
+
+Feedback
+Correct! Building Docker images and converting them to Singularity images ensures compatibility and reproducibility in HPC environments.
+
+Question 44
+44
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+What service is responsible for monitoring the state of system resources and deciding when and on which subset of resources each job is to run?
+
+Server
+
+Communication service
+
+MoM
+
+Correct:
+
+Scheduler
+
+Correct answer
+Feedback
+Correct! The scheduler is responsible for monitoring the state of system resources and deciding when and on which subset of resources each job is to run.
+
+Question 45
+45
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Please select the sentences that are true regarding HPC
+
+Correct:
+
+The greater the performance that is required, the harder it is to optimize the user program.
+
+Correct answer
+50%
+HPC architecture is concerned with only the lowest-level technologies and circuit design.
+
+0%
+The cost of the software on an HPC system is much less than the cost of the hardware platform.
+
+0%
+Correct:
+
+Code reuse is critical to managing application development complexity and difficulty.
+
+Correct answer
+50%
+Question 46
+46
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+What is true about job queues in resource managers?
+
+FIFO is a job queue strategy
+
+It is possible to find an interactive queue solely for interactive jobs.
+
+Defines the order in which jobs are selected
+
+Correct:
+
+All answers are correct
+
+Correct answer
+Most systems typically use multiple job queues
+
+Feedback
+Correct! All statements about job queues in resource managers are true.
+
+Question 47
+47
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+What is true about MPPs clusters? MPP stands for Massively Parallel Processing. An MPP cluster is a high-performance computing system composed of multiple interconnected computers (nodes) working together to solve complex problems
+
+Typically, MPPs exhibit lower efficiencies with respect to number of cores than Commodity Clusters
+
+0%
+Correct:
+
+They use Message passing by a system area network (SAN) 
+
+Correct answer
+33.34%
+Correct:
+
+MPPs are single systems comprising many integrated computer.
+
+Correct answer
+33.33%
+MPPs always have shared-memory between all nodes
+
+0%
+Correct:
+
+Easily scales to extremes of computing system size and performance
+
+Correct answer
+33.33%
+Feedback
+MPP architecture is the structure that most easily scales to the extremes of computing system size and performance (Fig. 2.19). The largest supercomputers today, comprising millions of processor cores, are of this class of multiprocessor. MPPs are (in most cases) not shared-memory architectures, but are distributed memory. In an MPP separate groups of processor cores are directly connected to their own local memory. Such groups are colloquially referred to as “nodes”, and there is no sharing of memory between them; this simplifies design and eliminates inefficiencies that impede scalability. But in the absence of shared memories, a processor core in one group must employ a different method to exchange data and coordinate with cores of other processor groups. The logical capability for message passing is enabled by the physical system area network (SAN) that integrates all the nodes to form a single system. A message is transferred between two processor cores of the system, with each core running a separate process. By this means a receiving process and its host processor can acquire data from a sending processor's process. The same network can be used to synchronize processes running on separate processors. By 1997 the first system capable of teraflops (HPL benchmark) was the Intel ASCI Red MPP deployed at Sandia National Laboratories.
+
+Question 48
+48
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+If a modern CPU aims to enhance instruction throughput by dividing instruction processing into distinct stages, with each stage being managed by a different segment of the CPU, what is this technique called?
+
+Correct:
+
+Pipelining
+
+Correct answer
+Branch Prediction
+
+Loop Unrolling
+
+Vector Processing
+
+Hyperthreading
+
+Feedback
+Pipelining is a technique where instruction processing is broken down into stages, allowing multiple instructions to be processed concurrently as they move through the pipeline. It boosts the CPU's instruction throughput.
+
+Question 49
+49
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+Which command in Slurm provides information about current job status, node availability, and other cluster states?
+
+sstate
+
+snodes
+
+spart
+
+srun
+
+Correct:
+
+sinfo
+
+Correct answer
+Feedback
+Correct! The 'sinfo' command is used to display the status of nodes and partitions in Slurm.
+
+Question 50
+50
+Multiple Choice
+CORRECT
+10
+/
+10
+Grade: 10 out of 10 points possible
+What is the primary difference between sustained and peak performance in HPC?
+
+Sustained performance refers to the maximum rate theoretically possible by the hardware, while peak performance refers to the real-world application performance.
+
+Sustained and peak performance are the same.
+
+Peak performance is only relevant for supercomputers, while sustained performance is for personal computers.
+
+Correct:
+
+Sustained performance refers to the real-world application performance, while peak performance refers to the maximum rate theoretically possible by the hardware.
+
+Correct answer
+Sustained performance is only achieved after a supercomputer has been operational for 5 years.
+
+Feedback
+Sustained performance refers to the actual or real-world application performance, while peak performance represents the maximum rate that could be achieved theoretically by the hardware.
