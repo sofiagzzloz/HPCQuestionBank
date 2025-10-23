@@ -148,13 +148,15 @@ def parse_question_block(block: str, filename: str) -> List[List[str]]:
     )
 
     return [[_normalise_space(" ".join(question_lines))] + options[: len(OPTION_COLUMNS)] + [correct_letters, filename]]
-# ==================================
 
+
+# ==================================
 def truncate_cells(df, max_len=49000):
     """Truncate to fit Google Sheets limits."""
     for c in df.columns:
         df[c] = df[c].astype(str).apply(lambda x: x[:max_len])
     return df
+
 
 # ----------------------------------------------------------
 # 🧠 MUCH BETTER PARSER
@@ -185,6 +187,7 @@ def parse_question_file(filepath):
         "Question", *OPTION_COLUMNS, "Correct", "Source File"
     ])
 
+
 # ----------------------------------------------------------
 # 🔗 Upload to Google Sheets
 # ----------------------------------------------------------
@@ -198,6 +201,7 @@ def push_to_google_sheets(df):
     sheet.clear()
     set_with_dataframe(sheet, df)
     print(f"✅ Uploaded {len(df)} rows to Google Sheet → {GOOGLE_SHEET_NAME}")
+
 
 # ----------------------------------------------------------
 def main():
@@ -222,9 +226,12 @@ def main():
 
     combined = pd.concat(all_dfs, ignore_index=True)
 
-    # Flag duplicate questions across all sources.
+    # ✅ Handle duplicates properly (keep only first occurrence)
     normalized_question = (
-        combined["Question"].astype(str).str.lower().str.replace(r"\s+", " ", regex=True).str.strip()
+        combined["Question"].astype(str)
+        .str.lower()
+        .str.replace(r"\s+", " ", regex=True)
+        .str.strip()
     )
     counts = normalized_question.value_counts()
     combined["Unique"] = normalized_question.map(lambda x: counts.get(x, 0) == 1)
@@ -233,8 +240,7 @@ def main():
     skipped_duplicates = combined[~first_occurrence_mask]
     if not skipped_duplicates.empty:
         print(
-            f"⚠️ Skipping {len(skipped_duplicates)} duplicate question entries "
-            "across all sources."
+            f"⚠️ Skipping {len(skipped_duplicates)} duplicate question entries across all sources."
         )
 
     unique_questions = combined[first_occurrence_mask].copy()
@@ -246,5 +252,7 @@ def main():
     unique_questions = truncate_cells(unique_questions)
     push_to_google_sheets(unique_questions)
 
+
 if __name__ == "__main__":
     main()
+
