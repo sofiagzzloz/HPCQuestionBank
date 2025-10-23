@@ -148,19 +148,22 @@ def parse_question_block(block: str, filename: str) -> List[List[str]]:
     )
 
     return [[_normalise_space(" ".join(question_lines))] + options[: len(OPTION_COLUMNS)] + [correct_letters, filename]]
-# ==================================
 
+
+# ==================================
 def truncate_cells(df, max_len=49000):
     """Truncate to fit Google Sheets limits."""
     for c in df.columns:
         df[c] = df[c].astype(str).apply(lambda x: x[:max_len])
     return df
 
+
 # ----------------------------------------------------------
 # 🧠 MUCH BETTER PARSER
 # ----------------------------------------------------------
 def parse_question_file(filepath):
-    text = open(filepath, "r", encoding="utf-8", errors="ignore").read()
+    with open(filepath, "r", encoding="utf-8", errors="ignore") as handle:
+        text = handle.read()
     text = text.replace("\r", "\n")
 
     blocks = re.split(r"\n(?=Question\s*\d+\b)", text)
@@ -184,6 +187,7 @@ def parse_question_file(filepath):
         "Question", *OPTION_COLUMNS, "Correct", "Source File"
     ])
 
+
 # ----------------------------------------------------------
 # 🔗 Upload to Google Sheets
 # ----------------------------------------------------------
@@ -198,9 +202,14 @@ def push_to_google_sheets(df):
     set_with_dataframe(sheet, df)
     print(f"✅ Uploaded {len(df)} rows to Google Sheet → {GOOGLE_SHEET_NAME}")
 
+
 # ----------------------------------------------------------
 def main():
-    files = [os.path.join(QUESTIONS_DIR, f) for f in os.listdir(QUESTIONS_DIR) if f.endswith(".txt")]
+    files = sorted(
+        os.path.join(QUESTIONS_DIR, f)
+        for f in os.listdir(QUESTIONS_DIR)
+        if f.endswith(".txt")
+    )
     if not files:
         print("⚠️ No .txt files found in 'questions/' folder.")
         return
@@ -208,18 +217,42 @@ def main():
     all_dfs = []
     for f in files:
         df = parse_question_file(f)
-        all_dfs.append(df)
+        if not df.empty:
+            all_dfs.append(df)
+
+    if not all_dfs:
+        print("⚠️ No parsable questions found in the provided files.")
+        return
+
     combined = pd.concat(all_dfs, ignore_index=True)
 
-    # Flag duplicate questions across all sources.
+    # ✅ Handle duplicates properly (keep only first occurrence)
     normalized_question = (
-        combined["Question"].str.lower().str.replace(r"\s+", " ", regex=True).str.strip()
+        combined["Question"].astype(str)
+        .str.lower()
+        .str.replace(r"\s+", " ", regex=True)
+        .str.strip()
     )
     counts = normalized_question.value_counts()
     combined["Unique"] = normalized_question.map(lambda x: counts.get(x, 0) == 1)
 
-    combined = truncate_cells(combined)
-    push_to_google_sheets(combined)
+    first_occurrence_mask = ~normalized_question.duplicated(keep="first")
+    skipped_duplicates = combined[~first_occurrence_mask]
+    if not skipped_duplicates.empty:
+        print(
+            f"⚠️ Skipping {len(skipped_duplicates)} duplicate question entries across all sources."
+        )
+
+    unique_questions = combined[first_occurrence_mask].copy()
+    unique_questions["Unique"] = True
+    if unique_questions.empty:
+        print("⚠️ No unique questions available after de-duplication.")
+        return
+
+    unique_questions = truncate_cells(unique_questions)
+    push_to_google_sheets(unique_questions)
+
 
 if __name__ == "__main__":
     main()
+
