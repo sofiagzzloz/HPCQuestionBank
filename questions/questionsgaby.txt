@@ -1,0 +1,1775 @@
+Question 1
+1
+MULTIPLE CHOICE
+In OpenMP, which directive is specifically designed to ensure that a certain section of the code is executed by only one thread at a time, providing mutual exclusion access to shared resources or variables?
+
+#pragma omp barrier
+#pragma omp single
+#pragma omp master
+#pragma omp parallel
+#pragma omp critical
+Feedback
+#pragma omp critical Explanation: The #pragma omp critical directive ensures mutual exclusion, meaning only one thread can execute the critical section at a time, ensuring safe access to shared resources or variables.
+Question 2
+2
+MULTIPLE CHOICE
+What is true about MPPs clusters? MPP stands for Massively Parallel Processing. An MPP cluster is a high-performance computing system composed of multiple interconnected computers (nodes) working together to solve complex problems
+
+MPPs are single systems comprising many integrated computer.
+Easily scales to extremes of computing system size and performance
+MPPs always have shared-memory between all nodes
+They use Message passing by a system area network (SAN) 
+Typically, MPPs exhibit lower efficiencies with respect to number of cores than Commodity Clusters
+Feedback
+MPP architecture is the structure that most easily scales to the extremes of computing system size and performance (Fig. 2.19). The largest supercomputers today, comprising millions of processor cores, are of this class of multiprocessor. MPPs are (in most cases) not shared-memory architectures, but are distributed memory. In an MPP separate groups of processor cores are directly connected to their own local memory. Such groups are colloquially referred to as “nodes”, and there is no sharing of memory between them; this simplifies design and eliminates inefficiencies that impede scalability. But in the absence of shared memories, a processor core in one group must employ a different method to exchange data and coordinate with cores of other processor groups. The logical capability for message passing is enabled by the physical system area network (SAN) that integrates all the nodes to form a single system. A message is transferred between two processor cores of the system, with each core running a separate process. By this means a receiving process and its host processor can acquire data from a sending processor's process. The same network can be used to synchronize processes running on separate processors. By 1997 the first system capable of teraflops (HPL benchmark) was the Intel ASCI Red MPP deployed at Sandia National Laboratories.
+Question 3
+3
+MULTIPLE CHOICE
+Which cudaMemcpy flag should you use to copy data from host to device?
+
+cudaMemcpy(d_array, h_array, size, ???);
+
+cudaMemcpyDeviceToHost
+cudaMemcpyHostToDevice
+cudaMemcpyDeviceToDevice
+cudaMemcpyHostToHost
+cudaMemcpyDefault
+Feedback
+The cudaMemcpyHostToDevice flag is used to copy data from host memory to device memory, ensuring that data is transferred correctly to the GPU.
+Question 4
+4
+MULTIPLE CHOICE
+What will be the output of the following MPI code when executed with 4 processes?
+#include <mpi.h>
+#include <stdio.h>
+ 
+int main(int argc, char *argv[]) {
+   MPI_Init(&argc, &argv);
+ 
+   int rank, size;
+   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+   MPI_Comm_size(MPI_COMM_WORLD, &size);
+ 
+   int data = rank * 2;
+   MPI_Status status;
+ 
+   if (rank % 2 == 0) {
+       MPI_Send(&data, 1, MPI_INT, (rank + 1) % size, 0, MPI_COMM_WORLD);
+   } else {
+       MPI_Recv(&data, 1, MPI_INT, (rank - 1 + size) % size, 0, MPI_COMM_WORLD, &status);
+       printf("Rank %d received %d from Rank %d\n", rank, data, (rank - 1 + size) % size);
+   }
+ 
+   MPI_Finalize();
+   return 0;
+}
+
+Rank 1 prints "received 0 from Rank 0", Rank 3 prints "received 4 from Rank 2"
+Rank 2 prints "received 2 from Rank 1", Rank 0 prints "received 6 from Rank 3"
+Rank 1 and Rank 3 print "received 2 from Rank 0"
+Rank 1 prints "received 2 from Rank 0", Rank 3 prints "received 6 from Rank 2"
+Rank 0 and Rank 2 print "received 2 from Rank 1"
+Feedback
+Even-ranked processes send data to the next process (rank+1), resulting in Rank 1 receiving 0 from Rank 0 and Rank 3 receiving 4 from Rank 2.
+Question 5
+5
+MULTIPLE CHOICE
+h5dump is a tool that is part of HDF5 library. What is the main use of h5dump?
+
+analogous to the Unix ls command for HDF5 files
+dump to screen the data stored in the hdf5 file
+dump to recycle bin the data stored in the hdf5 file
+analogous to the Unix rm command for HDF5 files
+Question 6
+6
+MULTIPLE CHOICE
+Consider:
+ 
+int A[4] = {3,5,4,1};
+int x;
+if (rank==0) x=A[rank];
+MPI_Bcast(&x, 1, MPI_INT, 0, MPI_COMM_WORLD);
+printf("rank %d: x=%d\n", rank, x);
+ 
+You intended each rank to get a different element of A. What’s true?
+
+Works: rank gets A[rank] after bcast.
+Everyone prints x=3.
+ Everyone prints x=A[rank] because rank differs.
+This is a gather, not a broadcast.
+Need MPI_Allgather to get different values per rank.
+Feedback
+MPI_Bcast replicates the same root value to all ranks → all see x=3. Use MPI_Scatter for per-rank slices, as shown in slides.
+Question 7
+7
+MULTIPLE CHOICE
+Consider the following optimized OpenMP code using loop unrolling. What advantages does this provide in terms of performance and cache usage, and what would be the output?
+
+#include <omp.h>
+#include <stdio.h>
+ 
+int main() {
+   int n = 8;
+   double array[8] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0};
+   double sum = 0.0;
+ 
+   #pragma omp parallel for reduction(+:sum)
+   for (int i = 0; i < n; i += 4) {
+       sum += array[i] + array[i+1] + array[i+2] + array[i+3];
+   }
+ 
+   printf("Sum: %f\n", sum);
+   return 0;
+}
+
+Results in sum = 0.0 due to incorrect loop unrolling syntax.
+Sum is 36.0, as loop unrolling increases cache efficiency and reduces loop overhead.
+Outputs unpredictable results due to race conditions.
+Causes segmentation fault due to out-of-bounds access.
+Sum is 20.0, due to partial iteration handling error.
+Feedback
+Correct! The sum is 36.0, as loop unrolling improves cache efficiency and reduces loop overhead.
+Question 8
+8
+MULTIPLE CHOICE
+Which profiling technique is most suitable for identifying performance bottlenecks in parallel applications?
+
+Sampling
+Instrumentation
+Tracing
+Call graph profiling
+Memory profiling
+Feedback
+Tracing captures a log of events during execution, making it especially useful for understanding the behaviour of parallel applications. It helps identify synchronization issues, communication delays, and load imbalances, which are common performance bottlenecks in parallel computing environments.
+Question 9
+9
+MULTIPLE CHOICE
+Linear Algebra in HPC Which of the following is NOT a function of Basic Linear Algebra Subprograms (BLAS)?
+
+Vector addition
+Matrix-vector product
+Matrix inversion
+Vector scaling
+Dot product
+Feedback
+Matrix inversion. Explanation: BLAS focuses on basic vector and matrix operations. Matrix inversion, while a fundamental linear algebra operation, is typically handled by higher-level libraries such as LAPACK.
+Question 10
+10
+MULTIPLE CHOICE
+In the context of HPC, why might arrays be preferred over linked lists for data processing?
+
+Arrays are more flexible in memory allocation.
+Arrays support better data locality, which is crucial for cache performance.
+Linked lists allow for faster access to random elements.
+Linked lists are easier to parallelize.
+Arrays require less synchronization in multi-threaded environments.
+Feedback
+Arrays are generally preferred in HPC for data processing because they provide better data locality. This means that elements that are accessed sequentially are stored close together in memory, allowing for efficient cache utilization and reduced access latency. In contrast, linked lists, with their non-contiguous memory allocation, can lead to poor cache performance, especially in memory-bound applications.
+Question 11
+11
+MULTIPLE CHOICE
+You are developing a high-performance computing (HPC) application for real-time data processing, where multiple data streams are processed concurrently. OpenMP is used to manage the workload effectively across available cores.
+
+Evaluate the code and suggest the best strategy for using OpenMP to balance the workload and ensure timely processing of data streams.
+
+#include <omp.h>
+#include <stdio.h>
+ 
+#define NUM_STREAMS 10
+#define DATA_PER_STREAM 1000
+ 
+void process_stream(int stream_id, int data[DATA_PER_STREAM]) {
+   // Simulate data processing
+   for (int i = 0; i < DATA_PER_STREAM; i++) {
+       data[i] *= 2;
+   }
+   printf("Stream %d processed\n", stream_id);
+}
+ 
+int main() {
+   int data_streams[NUM_STREAMS][DATA_PER_STREAM];
+ 
+   // Initialize data streams with random values
+   for (int i = 0; i < NUM_STREAMS; i++) {
+       for (int j = 0; j < DATA_PER_STREAM; j++) {
+           data_streams[i][j] = j;
+       }
+   }
+ 
+   for (int i = 0; i < NUM_STREAMS; i++) {
+       process_stream(i, data_streams[i]);
+   }
+ 
+   return 0;
+}
+
+Use #pragma omp parallel for to parallelize processing of each stream, ensuring all streams are handled simultaneously.
+Apply #pragma omp sections for processing independent data chunks within each stream.
+Use #pragma omp single to avoid contention and improve data coherence.
+Implement #pragma omp task for dynamic scheduling of stream processing.
+Rely on operating system scheduling instead of OpenMP for real-time performance.
+Feedback
+Correct! The best strategy is using #pragma omp parallel for to parallelize processing of each stream.
+Question 12
+12
+MULTIPLE CHOICE
+If a modern CPU aims to enhance instruction throughput by dividing instruction processing into distinct stages, with each stage being managed by a different segment of the CPU, what is this technique called?
+
+Vector Processing
+Loop Unrolling
+Hyperthreading
+Branch Prediction
+Pipelining
+Feedback
+Pipelining is a technique where instruction processing is broken down into stages, allowing multiple instructions to be processed concurrently as they move through the pipeline. It boosts the CPU's instruction throughput.
+Question 13
+13
+MULTIPLE CHOICE
+A team is developing a real-time image processing application that leverages both CPUs and GPUs. Which combination of tools would best optimize performance?
+
+MPI and OpenMP
+MPI and CUDA
+OpenMP and CUDA
+PGAS and CUDA
+MPI and PGAS
+Feedback
+Correct! The combination of OpenMP and CUDA is best for optimizing performance in real-time image processing.
+Question 14
+14
+MULTIPLE CHOICE
+Which of the following statements correctly explains why the following OpenMP code snippet results in a race condition and how to fix it?
+
+#include <omp.h>
+#include <stdio.h>
+ 
+int main() {
+   int counter = 0;
+ 
+   #pragma omp parallel for
+   for (int i = 0; i < 1000; i++) {
+       counter++;
+   }
+ 
+   printf("Final Counter: %d\n", counter);
+   return 0;
+}
+
+Each thread independently modifies counter, causing unpredictable results. Use #pragma omp parallel for the increment operation.
+The code is correctly synchronized and will always print 1000.
+Race condition occurs due to insufficient loop iterations. Increase the loop range.
+The issue lies with the printf statement. It should be inside the parallel region.
+Counter overflow causes a race condition; use a larger data type.
+Each thread independently modifies counter, causing unpredictable results. Use #pragma omp atomic for the increment operation.
+Feedback
+Correct! The race condition occurs because each thread independently modifies the counter, and using #pragma omp atomic will fix it.
+Question 15
+15
+MULTIPLE CHOICE
+Linear Algebra in HPC Real-World Scenario Imagine you are working on a weather simulation program that requires solving a large system of linear equations. Which tool, known for providing routines to solve systems of linear equations, would you consider using?
+
+Basic Linear Algebra Subprograms (BLAS) - Focuses on basic vector and matrix operations.
+Parallel Boost Graph Library - Designed for large-scale graph operations.
+VTK - Used for 3D data rendering and visualization.
+Linear Algebra Package (LAPACK) - Provides routines for solving systems of linear equations, eigenvalue problems, and matrix inversion.
+METIS - Used for decomposing graphs/meshes for parallel computing.
+Feedback
+Linear Algebra Package (LAPACK). Explanation: LAPACK is specifically designed to provide routines for various linear algebra operations, including solving systems of linear equations, making it suitable for the weather simulation program scenario.
+Question 16
+16
+MULTIPLE CHOICE
+Performance Monitoring When optimizing a high-performance computing application, performance monitoring is crucial to:
+
+Visualize 3D datasets.
+Solve partial differential equations.
+Decompose meshes.
+Process signals.
+Identify bottlenecks and inefficiencies in the code.
+Feedback
+Identify bottlenecks and inefficiencies in the code. Explanation: Performance monitoring tools, like PAPI or Vampir, help in collecting performance metrics. By analyzing these metrics, developers can identify parts of the code that are inefficient or causing performance bottlenecks, enabling them to optimize the application effectively.
+Question 17
+17
+MULTIPLE CHOICE
+A pharmaceutical company is conducting high-throughput drug screening using machine learning models. They need to ensure high performance and fast deployment across different HPC systems. Which containerization technology should they use, and how would it benefit their workflow?
+
+Use VMware vSphere for managing virtual machines
+Use Docker for containerization of machine learning models
+Use Singularity for encapsulating machine learning workflows in HPC environments
+Use Azure Batch for job scheduling and resource scaling
+Use Google Cloud Storage for storing drug screening data
+Feedback
+Correct! Singularity is recommended for encapsulating machine learning workflows in HPC environments.
+Question 18
+18
+MULTIPLE CHOICE
+How would you modify the following OpenACC code to ensure parallel execution of the loop?
+
+void addArrays(float *A, float *B, float *C, int N) {
+   for (int i = 0; i < N; i++) {
+       C[i] = A[i] + B[i];
+   }
+}
+
+Add #pragma acc parallel
+Add #pragma acc loop independent
+Add #pragma acc parallel loop
+Add #pragma acc parallel reduction(+:C[i])
+Add #pragma acc data region
+Feedback
+The #pragma acc parallel loop directive ensures that the loop is parallelized across available GPU cores, allowing each iteration to execute concurrently.
+Question 19
+19
+MATCHING
+Match each library with the application domain
+
+Prompts
+Answers
+1
+Linear algebra 
+ BLAS, Lapack, ScaLapack, GNU Scientific Library 
+2
+Partial differential equations 
+PETSc, Trilinos
+3
+Graph algorithms
+ Boost Graph Library, Parallel Boost Graph Library
+4
+input/output
+HDF5, Netcdf, Silo
+5
+Parallelization 
+Pthreads, MPI, Boost MPI 
+Question 20
+20
+MULTIPLE CHOICE
+Analyse the following matrix multiplication code and identify which optimization technique would most effectively improve cache performance:
+for (int i = 0; i < n; i++) {
+   for (int j = 0; j < n; j++) {
+       for (int k = 0; k < n; k++) {
+           C[i][j] += A[i][k] * B[k][j];
+       }
+   }
+}
+
+Loop unrolling
+Loop fusion
+Loop tiling (blocking)
+Vectorization
+Speculative execution
+Feedback
+Loop tiling (blocking) is particularly effective in improving cache performance by reorganizing the computation to operate on smaller blocks of the matrix that fit into the cache. This reduces cache misses and improves data locality, significantly speeding up matrix multiplication.
+Question 21
+21
+MULTIPLE CHOICE
+Which of the following about OpenMP is incorrect: 
+
+OpenMP is an API that enables explicit multi-threaded parallelism. 
+The primary components of OpenMP are compiler directives, runtime library, and environment variables. 
+OpenMP implementations exist for the Microsoft Windows platform. 
+OpenMP is designed for distributed memory parallel systems and guarantees efficient use of memory. 
+OpenMP supports UMA and NUMA architectures. 
+Question 22
+22
+MULTIPLE CHOICE
+What is the primary purpose of the following MPI code snippet?
+#include <mpi.h>
+
+int main(int argc, char *argv[]) {
+   MPI_Init(&argc, &argv);
+
+   int rank;
+   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+   int data = 0;
+   if (rank == 0) {
+       data = 100;
+       MPI_Bcast(&data, 1, MPI_INT, 0, MPI_COMM_WORLD);
+   } else {
+       MPI_Bcast(&data, 1, MPI_INT, 0, MPI_COMM_WORLD);
+   }
+
+   printf("Rank %d received data: %d\n", rank, data);
+
+   MPI_Finalize();
+   return 0;
+}
+
+Broadcast data from rank 0 to all processes
+Gather data from all ranks into rank 0
+Reduce data to find maximum value
+Scatter different data to each process
+Cause a deadlock in the program
+Feedback
+Correct! The primary purpose of this code is to broadcast data from rank 0 to all processes.
+Question 23
+23
+MULTIPLE CHOICE
+In the context of CUDA, which statement correctly utilizes shared memory for a tile-based matrix multiplication?
+ 
+__global__ void matrixMulShared(float *A, float *B, float *C, int width) {
+   __shared__ float tileA[16][16];
+   __shared__ float tileB[16][16];
+ 
+   // Load tiles into shared memory
+   int row = threadIdx.y;
+   int col = threadIdx.x;
+   
+   // Missing code for loading tiles
+ 
+   // Compute result
+   float sum = 0;
+   for (int k = 0; k < width / 16; k++) {
+       // Code to utilize shared memory
+       __syncthreads();
+   }
+   C[row * width + col] = sum;
+}
+
+tileA[row][col] = A[row * width + col];
+tileA[row][col] = A[(blockIdx.y * 16 + row) * width + (k * 16 + col)];
+tileA[row][col] = A[row + k * width];
+tileA[row][col] = A[blockIdx.y * blockDim.y + threadIdx.y];
+tileA[row][col] = A[col];
+Feedback
+The statement tileA[row][col] = A[(blockIdx.y * 16 + row) * width + (k * 16 + col)]; correctly loads a tile from global to shared memory by calculating the global row and column indices based on block and thread indices.
+Question 24
+24
+MULTIPLE CHOICE
+PETSc for PDEs. In the context of solving partial differential equations (PDEs) with PETSc, what is a significant advantage of using this library?
+
+PETSc is designed to work exclusively with serial computations.
+PETSc offers limited scalability across distributed-memory systems.
+PETSc provides a range of solvers and preconditioners optimized for large-scale, parallel computations.
+PETSc is limited to solving algebraic equations and cannot handle PDEs.
+PETSc does not support the integration with other HPC libraries.
+Feedback
+PETSc is known for its scalability and extensive range of solvers and preconditioners, making it ideal for solving large-scale PDEs in parallel computing environments.
+Question 25
+25
+MULTIPLE CHOICE
+You are profiling a parallel MPI application using TAU. After running the profiling session, you observe that a significant amount of time is spent in the following code segment:
+MPI_Reduce(&local_sum, &global_sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+
+What optimization could reduce the time spent in this MPI function?
+
+Use MPI_Bcast instead of MPI_Reduce.
+Replace the reduction operation with point-to-point communication.
+Optimize the data structure used for local_sum.
+Implement non-blocking communication using MPI_Ireduce.
+Reduce the frequency of calling MPI_Reduce.
+Feedback
+Non-blocking communication with MPI_Ireduce can overlap communication with computation, potentially reducing the time processes spend waiting for the reduction operation to complete.
+Question 26
+26
+MULTIPLE CHOICE
+Explain if the following MPI code segment is correct or not, and why:
+
+Process 0 executes:
+MPI_Recv(&yourdata, 1, MPI_FLOAT, 1, tag, MPI_COMM_WORLD, &status);
+MPI_Send(&mydata, 1, MPI_FLOAT, 1, tag, MPI_COMM_WORLD);
+
+Process 1 executes:
+MPI_Recv(&yourdata, 1, MPI_FLOAT, 0, tag,MPI_COMM_WORLD, &status);
+MPI_Send(&mydata, 1, MPI_FLOAT, 0, tag, MPI_COMM_WORLD);
+
+Correct, the system will execute the code without problems.
+Incorrect, system will be in deadlock.
+Feedback
+Both are blocking receives waiting for each other to send. System is deadlocked.
+Question 27
+27
+MULTIPLE CHOICE
+Which of the following is NOT a source of performance degradation in HPC systems?
+
+Starvation
+Overclocking
+Latency
+Overhead
+Contention
+Feedback
+Overclocking is a technique used to boost the performance of a processor beyond its factory settings, but it's not mentioned as a source of performance degradation in the provided context.
+Question 28
+28
+MULTIPLE CHOICE
+XYZ Corp., a leading AI research facility, just deployed a supercomputer. During initial testing, the system frequently suffers from delays and lags. As a troubleshooter, which source of performance degradation would you first investigate?
+
+Starvation: a situation where a task is perpetually deprived of the resources or conditions it needs to proceed.
+CPU brand compatibility
+Moore's law violation
+The age of the machine
+Vector processing alignment
+Feedback
+Starvation is a primary source of performance degradation where tasks are deprived of necessary resources.
+Question 29
+29
+MULTIPLE CHOICE
+In the context of I/O optimization, how does caching improve data access performance in HPC systems?
+
+By storing all data in the CPU cache, eliminating the need for disk access.
+By preloading frequently accessed data into faster storage layers like RAM, reducing disk access times.
+By compressing data on the fly to save storage space.
+By distributing data evenly across all available nodes.
+By automatically encrypting data before it is cached.
+Feedback
+Caching frequently accessed data in faster storage layers like RAM reduces the time required to access this data, thereby improving overall I/O performance.
+Question 30
+30
+MULTIPLE CHOICE
+Why is HDF5 particularly well-suited for managing complex scientific datasets in HPC environments?
+
+It is a lightweight format with minimal features.
+It only supports small-scale, single-node applications.
+It provides hierarchical data structures and supports parallel I/O operations.
+It encrypts data by default for enhanced security.
+It is primarily used for big data analytics, not HPC.
+Feedback
+HDF5 is designed to manage complex, hierarchical data and supports parallel I/O, making it well-suited for the large and intricate datasets commonly used in scientific computing.
+Question 31
+31
+MULTIPLE CHOICE
+Understanding LAPACK Routines. Which LAPACK routine would you use to efficiently solve a system of linear equations Ax = b, where A is a square matrix, and what is the general structure of this routine’s name?
+
+dgeev, where X = data type, YY = operation, ZZZ = matrix type
+dgesv, where X = data type, YY = matrix type, ZZZ = operation
+dgemm, where X = data type, YY = operation, ZZZ = matrix type
+dgeqrf, where X = operation, YY = matrix type, ZZZ = data type
+dgetrf, where X = matrix type, YY = data type, ZZZ = operation
+Feedback
+The routine dgesv is used in LAPACK to solve a system of linear equations where A is a square matrix. The naming convention indicates that "d" stands for double precision, "ge" refers to a general matrix, and "sv" indicates that the operation is to solve a system of equations.
+Question 32
+32
+MULTIPLE CHOICE
+In a climate modeling simulation that generates large volumes of data, which parallel I/O strategy would be most effective to avoid I/O bottlenecks?
+
+Storing all data on a single SSD.
+Writing data sequentially to a single file without parallel I/O.
+Using MPI-IO to enable multiple processes to write to different parts of a shared file simultaneously.
+Compressing data after the simulation completes.
+Using NFS to share data across the network.
+Feedback
+MPI-IO allows for efficient parallel I/O by enabling multiple processes to write to different parts of a shared file, reducing bottlenecks.
+Question 33
+33
+MULTIPLE CHOICE
+In an image processing application running on an HPC system, the memory bandwidth is the primary bottleneck. Which technique would most likely improve performance?
+
+Increasing the size of the images being processed.
+Storing images as linked lists for faster access.
+Using loop tiling and prefetching to optimize data access patterns.
+Using higher precision for image pixel values.
+Converting the images to grayscale before processing.
+Feedback
+Loop tiling and prefetching are effective techniques for optimizing memory access patterns, reducing memory bandwidth bottlenecks, and improving performance in memory-intensive applications like image processing on HPC systems.
+Question 34
+34
+MULTIPLE CHOICE
+In a bioinformatics project, you need to perform complex sequence alignment across multiple nodes. Which MPI feature would help in reducing communication overhead during this task?
+
+Point-to-point communication
+Collective operations
+One-sided communication
+Blocking communication
+Persistent communication
+Feedback
+Correct! Collective operations help reduce communication overhead in MPI.
+Question 35
+35
+MULTIPLE CHOICE
+In high-performance computing scenarios like simulating weather patterns, ensuring all processes have consistent weather data is crucial. Which MPI function would be effective in making sure that an updated weather parameter (e.g., temperature) from the master process is communicated to all other processes?
+
+MPI_Bcast()
+MPI_Send()
+MPI_Recv()
+MPI_Scatter()
+MPI_Reduce()
+Feedback
+MPI_Bcast() Explanation: MPI_Bcast() broadcasts a message from the sending process (master) to all other processes in the communicator, ensuring that all processes have the updated weather parameter.
+Question 36
+36
+MULTIPLE CHOICE
+What does this OpenACC code will do?
+
+9       // initialization
+10      for (int i = 0; i < N; i++) vec[i] = i+1;
+11
+12      #pragma acc parallel async
+13      for (int i = 100; i < N; i++) gpu_sum += vec[i];
+14
+15      // the following code executes without waiting for GPU result
+16      for (int i = 0; i < 100; i++) cpu_sum += vec[i];
+17
+18      // synchronize and verify results
+19      #pragma acc wait
+20      printf(“Result: %d (expected: %d)\n”, gpu_sum+cpu_sum, (N+1)∗N/2);
+
+Sums vector of 1000 elements, first 100 with CPU, 900 with GPU asynchronous.
+Sums vector of 1000 elements, first 100 with GPU, 900 with CPU asynchronous.
+Sums vector of 1000 elements, first 100 with GPU, 900 with CPU synchronous.
+Sums vector of 1000 elements, first 100 with CPU, 900 with GPU synchronous.
+Feedback
+The correct answer is: "Sums vector of 1000 elements, first 100 with CPU, 900 with GPU asynchronous." The code performs a partial sum on the CPU and offloads the rest to the GPU asynchronously, ensuring non-blocking execution with synchronization at the end.
+Question 37
+37
+MULTIPLE CHOICE
+Graph Algorithms In HPC, graph algorithms can be used to:
+
+Render 3D models
+Monitor performance
+Process signals
+Determine shortest paths in large-scale networks
+Decompose matrices
+Feedback
+Determine shortest paths in large-scale networks. Explanation: Graph algorithms are designed for operations on graphs, such as traversal, finding shortest paths, and network flows, especially in large-scale problems.
+Question 38
+38
+MULTIPLE CHOICE
+What is true about strong scalability?
+
+Both the number of processors and the problem size are increased
+Number of processors is increased while the problem size remains constant
+Results in a reduced workload per processor
+Results in a constant workload per processor
+Mostly used for long-running CPU-bound
+Mostly used for large memory-bound applications where the required memory cannot be satisfied by a single node
+Feedback
+Strong scaling: the number of processors is increased while the problem size remains constant. 
+This also results in a reduced workload per processor. Strong scaling is mostly used for long-running CPU-bound. 
+Amdahl’s law: the speedup is limited by the fraction of the serial part of the software that is not amenable to parallelization.
+Weak scaling: both the number of processors and the problem size are increased. This also results in a constant workload per processor. Weak scaling is mostly used for large memory-bound applications where the required memory cannot be satisfied by a single node
+Question 39
+39
+MULTIPLE CHOICE
+How would you transform the following OpenACC code to allow the compiler more flexibility in optimizing loop execution?
+
+#pragma acc parallel loop
+for (int i = 0; i < N; i++) {
+   compute(data[i]);
+}
+
+#pragma acc kernels
+#pragma acc parallel loop gang
+#pragma acc kernels loop
+#pragma acc parallel
+#pragma acc loop independent
+Feedback
+The #pragma acc kernels directive gives the compiler more freedom to optimize the loop by deciding which parts to parallelize, potentially improving performance through better optimizations.
+Question 40
+40
+MULTIPLE CHOICE
+ In the following MPI code, which process will output the final value of result and what will it be?
+#include <mpi.h>
+#include <stdio.h>
+ 
+int main(int argc, char *argv[]) {
+   MPI_Init(&argc, &argv);
+ 
+   int rank, size;
+   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+   MPI_Comm_size(MPI_COMM_WORLD, &size);
+ 
+   int data = rank * 2;
+   int result = 0;
+ 
+   MPI_Reduce(&data, &result, 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
+ 
+   if (rank == 0) {
+       printf("The maximum value is %d\n", result);
+   }
+ 
+   MPI_Finalize();
+   return 0;
+}
+
+Rank 0 will output "The maximum value is 6"
+Rank 3 will output "The maximum value is 6"
+Rank 0 will output "The maximum value is 0"
+Rank 0 will output "The maximum value is 3"
+Rank 3 will output "The maximum value is 3"
+Feedback
+Correct! Rank 0 will output "The maximum value is 6".
+Question 41
+41
+MULTIPLE CHOICE
+What HPC software libraries will you use for partial differential equations?
+
+A.SuperLU, PETSc, SLEPc, ELPA, Hypre 
+PETSc, Trilinos
+Pthreads, MPI, Boost MPI
+METIS, ParMETIS 
+PAPI, Vampir
+Feedback
+PETSc is one of the most important toolkits for solving systems of partial differential equations. Beyond supporting distributed vectors and matrices as well as distributed Krylov subspace methods like GMRES and CG, PETSc provides ordinary differential equation integrators and nonlinear solvers, including Newton-based methods.
+A second widely used library for solving systems of partial differential equations is the Trilinos project. Trilinos is a collection of libraries spread across 10 different capability areas, each with a direct impact on applications targeting the solution of partial differential equations. These capability areas range from the standard scalable linear algebra support to nontraditional parallel programming environments to provide portability across multiple HPC architectures while leveraging architecture-dependent system capabilities.
+Question 42
+42
+MULTIPLE CHOICE
+In a memory-bound HPC application, you observe that the majority of time is spent waiting for memory accesses. Which profiling tool would help you identify the specific causes of memory stalls, and what kind of optimizations could you consider?
+
+Gprof; optimize function call hierarchy.
+Valgrind Massif; reduce memory footprint.
+Intel VTune Amplifier; improve cache locality or increase memory bandwidth
+Scalasca; balance workload distribution
+Perf; increase the number of CPU cores
+Feedback
+Intel VTune Amplifier can help identify memory access patterns that lead to stalls. Optimizations could include improving cache locality by reorganizing data structures or increasing memory bandwidth to reduce access latency.
+Question 43
+43
+MULTIPLE CHOICE
+Which of the following challenges is most likely to arise when scaling I/O operations in HPC systems with a large number of compute nodes?
+
+Increased CPU processing time due to more data.
+Excessive network bandwidth that exceeds available capacity.
+Contention and delays due to a single metadata server becoming a bottleneck.
+Decreased disk seek times leading to faster data access.
+Redundant data processing across multiple nodes.
+Feedback
+As the number of compute nodes increases, the demand on the metadata server also increases, potentially leading to contention and delays if the metadata server cannot handle the load efficiently.
+Question 44
+44
+MULTIPLE CHOICE
+Please review this code using OpenACC. What the reduction clause is used for?
+
+9       #pragma acc kernels
+10      {
+11         // initialize the vectors
+12         #pragma acc loop gang worker
+13         for (int i = 0; i < N; i++) {
+14             x[i] = 1.0;
+15             y[i] = -1.0;
+16       }
+17
+18      // perform computation
+19   #pragma acc loop independent reduction(+:r)
+20   for (int i = 0; i < N; i++) {
+21    y[i] = a∗x[i]+y[i];
+22    r += y[i];
+23   }
+
+reduction clause sums product elements of the result vector y into variable i.
+reduction clause bitwise-or all elements of the result vector y into variable r.
+reduction clause sums all elements of the result vector y into variable r.
+reduction clause that gets maximum of the result vector x into variable r.
+Feedback
+The correct answer is: "reduction clause sums all elements of the result vector y into variable r." The reduction clause ensures that each thread sums its local result into the global variable r, which accumulates the total sum across all threads.
+Question 45
+45
+MULTIPLE CHOICE
+What are the main three libraries from SuperLU?
+
+Sequential SuperLU, designed for sequential execution on processors with cache-based memory hierarchies.
+Multithreaded SuperLU designed for SMP architectures.
+Distributed SuperLU is designed for distributed-memory architectures. 
+AccSuperLU used only for architectures with Accelerators (GPUS)
+Question 46
+46
+MULTIPLE CHOICE
+What is the main difference between Platform as a Service (PaaS) and Infrastructure as a Service (IaaS) in the context of HPC?
+
+PaaS provides hardware resources, while IaaS provides software applications
+IaaS provides a pay-as-you-go pricing model, while PaaS does not
+PaaS offers pre-configured environments for HPC applications, while IaaS provides virtualized hardware resources
+IaaS is used for job scheduling, while PaaS is for container management
+PaaS requires higher upfront costs compared to IaaS
+Feedback
+Correct! PaaS offers pre-configured environments for HPC applications, while IaaS provides virtualized hardware resources.
+Question 47
+47
+MULTIPLE CHOICE
+Analyse the following MPI code snippet. What will be printed by each process when executed with 3 processes?
+#include <mpi.h>
+#include <stdio.h>
+ 
+int main(int argc, char *argv[]) {
+   MPI_Init(&argc, &argv);
+ 
+   int rank;
+   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+ 
+   int send_data = rank + 3;
+   int prefix_sum = 0;
+ 
+   MPI_Scan(&send_data, &prefix_sum, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+ 
+   printf("Rank %d has prefix sum = %d\n", rank, prefix_sum);
+ 
+   MPI_Finalize();
+   return 0;
+}
+
+Rank 0: "prefix sum = 3", Rank 1: "prefix sum = 4", Rank 2: "prefix sum = 5"
+Rank 0: "prefix sum = 3", Rank 1: "prefix sum = 7", Rank 2: "prefix sum = 12"
+Rank 0: "prefix sum = 3", Rank 1: "prefix sum = 6", Rank 2: "prefix sum = 9"
+Rank 0: "prefix sum = 3", Rank 1: "prefix sum = 6", Rank 2: "prefix sum = 11"
+Rank 0: "prefix sum = 0", Rank 1: "prefix sum = 1", Rank 2: "prefix sum = 2"
+Feedback
+Here's how the computation works for each process:
+Rank 0: send_data = 3 (since rank + 3 = 0 + 3). The prefix sum is simply 3.
+Rank 1: send_data = 4 (since rank + 3 = 1 + 3). The prefix sum for Rank 1 is 3 (from Rank 0) + 4 = 7.
+Rank 2: send_data = 5 (since rank + 3 = 2 + 3). The prefix sum for Rank 2 is 3 (from Rank 0) + 4 (from Rank 1) + 5 = 12.
+So, the correct sequence for each rank is:
+Rank 0: prefix sum = 3
+Rank 1: prefix sum = 7
+Rank 2: prefix sum = 12
+Given this, the correct answer is b) Rank 0: "prefix sum = 3", Rank 1: "prefix sum = 7", Rank 2: "prefix sum = 12".
+Question 48
+48
+MULTIPLE CHOICE
+You port a simple image blur that writes per-pixel accumulators into an AoS buffer:
+ 
+typedef struct { float sum; int count; } PixelAcc; // tightly packed
+PixelAcc *acc;  // width*height elements
+ 
+#pragma omp parallel for
+for (int y = 0; y < H; ++y) {
+    for (int x = 0; x < W; ++x) {
+        int i = y*W + x;
+        // each thread updates a disjoint strip, but neighbors land in same cache line
+        acc[i].sum   += input[i];
+        acc[i].count += 1;
+    }
+}
+ 
+On a many-core CPU, speed drops as threads increase. What change is most likely to fix the slowdown without adding locks?
+
+Replace inner loop with #pragma omp atomic updates on both fields.
+Change to schedule(dynamic) so threads hop around more.
+Pad PixelAcc to a cache line (e.g., add dummy bytes) or switch to SoA (float *sum; int *count;).
+Add #pragma omp critical around the two updates.
+Switch to nested parallelism (OMP_NESTED=TRUE) so each strip has its own team.
+Feedback
+This is classic false sharing: adjacent elements updated by different threads share a cache line, causing invalidation storms. Padding or converting to SoA separates hot fields to distinct lines and restores scalability. Slides highlight false sharing as a performance hazard and recommend structuring data to avoid it.
+Question 49
+49
+MULTIPLE CHOICE
+You have been tasked with optimizing a computational fluid dynamics (CFD) simulation running on a distributed HPC system. The simulation uses MPI for parallel processing and has been exhibiting performance bottlenecks due to uneven workload distribution. Which profiling tool would be most appropriate for identifying the root cause of this issue, and why?
+
+Intel VTune Amplifier
+Scalasca
+Gprof
+Valgrind
+Perf
+Feedback
+Scalasca is specifically designed for profiling parallel applications using MPI. It can identify communication patterns and synchronization delays, which are crucial for understanding and resolving workload imbalances in distributed systems.
+Question 50
+50
+MULTIPLE CHOICE
+Why would a programmer developing HPC software want to use libraries?
+
+Libraries save the programmer significant time by implementing “low-level” code that is likely to be far removed from the research question the programmer is interested in.
+Libraries (especially those for HPC) have been optimized for efficiency, typically for various hardware platforms, which is a very difficult task.
+Since libraries have usually been widely tested, there will very likely be fewer bugs in the library functions than in one’s own code.
+All of the above
+Question 51
+51
+MULTIPLE CHOICE
+In MPI, what does MPI_COMM_RANK return?
+
+Number of processes in an MPI program
+Priority of the current process
+Numerical identifier of the current process within an MPI communicator
+Linux process ID
+Question 52
+52
+MULTIPLE CHOICE
+Your research project involves training a deep neural network, requiring significant computational resources and efficient parallelism. You have access to both CPUs and GPUs. Which approach and tools would you use to optimize training?
+
+MPI for inter-node communication
+OpenMP for CPU parallelism
+CUDA for GPU acceleration
+Hybrid model with MPI and OpenMP
+Heterogeneous computing with CUDA and OpenCL
+Feedback
+Correct! Heterogeneous computing with CUDA and OpenCL is the best approach for optimizing deep neural network training.
+Question 53
+53
+MULTIPLE CHOICE
+In MPI, what purpose does a communicator serve?
+
+It prevents your main program’s MPI calls from being confused with a library’s MPI calls
+It can be used to identify a subgroup of processes that will participate in message passing
+If equal to MPI_COMM_WORLD, it shows that the communication involves all processes
+All of the above
+Question 54
+54
+MULTIPLE CHOICE
+The following pseudocode uses MPI to perform a reduction operation. What is the expected outcome of the MPI_Reduce function?
+
+MPI_Init()
+rank = MPI_Comm_rank()
+size = MPI_Comm_size()
+ 
+local_sum = calculate_local_sum(data[rank])
+ 
+global_sum = 0
+MPI_Reduce(local_sum, global_sum, MPI_SUM, 0, MPI_COMM_WORLD)
+ 
+if rank == 0:
+   print("Global Sum:", global_sum)
+ 
+MPI_Finalize()
+
+Each process prints its local sum.
+Each process computes the global sum independently.
+The global sum is computed and available on all processes.
+The global sum is computed and available only on the root process.
+Each process computes the sum of the local sums from its neighbors.
+Feedback
+The MPI_Reduce function performs a reduction operation (in this case, sum) and stores the result in the root process (rank 0).
+Question 55
+55
+MULTIPLE CHOICE
+In the context of High-Performance Computing (HPC), what advantage does incorporating accelerators like GPUs or FPGAs alongside traditional CPUs provide?
+
+Allows better RGB lighting effects.
+Enhances the boot-up speed of the system.
+Provides better aesthetics to the system build.
+Speeds up specific types of computations.
+Reduces the power consumption of the entire system.
+Feedback
+In HPC systems, accelerators like GPUs or FPGAs are incorporated alongside CPUs to significantly speed up certain types of computations, enhancing the system's overall performance.
+Question 56
+56
+MULTIPLE CHOICE
+Imagine a scenario where you have a huge image dataset that needs to be processed in parallel to identify certain patterns. Which of the following MPI functions would be most suitable for sending portions of an image to different processes for parallel processing?
+
+MPI_Scatter()
+MPI_Gather()
+MPI_Barrier()
+MPI_Reduce()
+MPI_Bcast()
+Feedback
+MPI_Scatter() Explanation: MPI_Scatter() is a collective communication function that divides the data (image portions) equally among all processes for parallel computation. In this case, each process will work on its own portion of the image data simultaneously.
+Question 57
+57
+MULTIPLE CHOICE
+Given a scenario where you're trying to sum elements of an array using multiple threads, which OpenMP clause would be particularly helpful in safely combining values from each thread into a single summary value?
+
+default
+schedule
+reduction
+section
+atomic
+Feedback
+reduction Explanation: The reduction clause in OpenMP is designed to safely combine values from all threads into a single summary value, such as summing elements of an array across multiple threads.
+Question 58
+58
+MULTIPLE CHOICE
+In the context of collective communication in MPI, what does the MPI_Reduce() function do?
+
+Distributes data from one process to all other processes
+Gathers data from all processes and distributes it back to all
+Applies a reduction operation on all processes and stores the result in one process
+Sends a message from one process to another
+Gathers data from all processes to one process without applying any operation
+Feedback
+Applies a reduction operation on all processes and stores the result in one process Explanation: MPI_Reduce() takes an array of input elements from each process, and returns an array of reduced elements to the root process. The reduction operation (e.g., sum, max) is applied element-wise to the input arrays.
+Question 59
+59
+MULTIPLE CHOICE
+In a distributed memory system using MPI, which technique can be used to improve performance by overlapping communication and computation?
+
+Blocking communication
+Collective operations
+Non-blocking communication
+Static scheduling
+Cache coherence
+Feedback
+Correct! Non-blocking communication improves performance by overlapping communication and computation.
+Question 60
+60
+MULTIPLE CHOICE
+Which of the following is not required for a MPI message passing call:
+int MPI_Send (void ∗message, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm)
+
+The starting memory address of your message
+Message type
+Size of the message in number of bytes
+Number of elements of data in the message
+Question 61
+61
+MULTIPLE CHOICE
+As we approach the exascale era, what is one of the primary challenges for the scalability of parallel filesystems?
+
+Decreasing the number of compute nodes required.
+Simplifying the file system interface for end-users.
+Managing metadata efficiently as the scale of data and number of nodes increase.
+Reducing the cost of storage hardware.
+Eliminating the need for network communication between nodes.
+Feedback
+As data volumes and the number of nodes grow, managing metadata efficiently becomes increasingly complex, posing a significant challenge for the scalability of parallel filesystems.
+Question 62
+62
+MULTIPLE CHOICE
+Examine the following OpenACC code and determine how to optimize its performance by adjusting the directives. Identify any missing directives. 2 answers are correct.
+
+#include <stdio.h>
+ 
+#define N 1024
+ 
+void vectorAdd(float *A, float *B, float *C) {
+   #pragma acc parallel
+   for (int i = 0; i < N; i++) {
+       C[i] = A[i] + B[i];
+   }
+}
+ 
+int main() {
+   float A[N], B[N], C[N];
+ 
+   // Initialize arrays
+   for (int i = 0; i < N; i++) {
+       A[i] = i;
+       B[i] = i;
+   }
+ 
+   // Perform vector addition
+   vectorAdd(A, B, C);
+ 
+   // Print result for verification
+   printf("C[0] = %f\n", C[0]);
+   return 0;
+}
+
+Use #pragma acc parallel loop to parallelize the loop directly.
+Add a data directive to manage data transfer.
+Change #pragma acc parallel to #pragma acc kernels.
+Introduce #pragma acc loop gang for better optimization.
+No changes needed; the code is already optimized.
+Feedback
+The #pragma acc parallel loop directive directly parallelizes the loop, improving clarity and performance. Additionally, a data directive such as #pragma acc data copyin(A[0:N], B[0:N]) copyout(C[0:N]) is necessary to manage data transfer between the host and device, optimizing execution.
+Question 63
+63
+MULTIPLE CHOICE
+What is the most important library for distributed-memory architectures?
+
+OpenMP
+Pthreads
+MPI
+VTK
+Question 64
+64
+MULTIPLE CHOICE
+In a large-scale simulation running on an HPC cluster, the time spent on I/O operations (reading/writing data) is significant. Which optimization strategy would help reduce I/O bottlenecks?
+
+Use a single thread to handle all I/O operations.
+Implement parallel I/O using MPI-IO.
+Store data in a global variable to minimize I/O operations.
+Increase the size of I/O buffers on the master node.
+Write data to disk after every iteration to prevent data loss.
+Feedback
+Implementing parallel I/O using MPI-IO allows multiple processes to perform I/O operations simultaneously, reducing the time spent on these operations and improving the overall efficiency of large-scale simulations on HPC clusters.
+Question 65
+65
+MULTIPLE CHOICE
+What is true about FLOPS?
+
+Stands for Floating-Point OperationS
+is an addition or multiplication of two real (or floating-point) numbers 
+Stands for Floating-point operations per second
+is an addition or multiplication of two integer numbers represented
+We uses the greek prefixes kilo, mega, giga, tera, and peta to represent 1000, 1 million, 1 billion, 1 trillion, and 1 quadrillion
+Question 66
+66
+MULTIPLE CHOICE
+In a deep learning project, you need to utilize GPUs for training neural networks. What is the main advantage of using CUDA in this context?
+
+Provides a global address space
+Simplifies memory management
+Enables high-throughput parallel processing on GPUs
+Automatically balances load across nodes
+Reduces communication overhead
+Feedback
+Correct! CUDA enables high-throughput parallel processing on GPUs.
+Question 67
+67
+TRUE/FALSE
+MTL4 and Blaze are examples of higher-level abstraction interfaces that application developers can use to develop distributed linear algebra applications using code that is very simple to read. 
+
+T
+True
+F
+False
+Feedback
+The complexity of using linear algebra library routines like those in BLAS, Lapack, or PETSc has motivated in part the development of several higher-level abstraction interfaces so that application developers can develop distributed linear algebra applications using code that is very simple to read. The MATLAB® framework [46] is a proprietary example of such an approach, but is not competitive in terms of performance with the libraries presented in this section. A template library which achieves comparable performance with PETSc for sparse linear algebra operations but retains the look and feel of the original mathematical notation of linear algebra is MTL4
+Question 68
+68
+MULTIPLE CHOICE
+ 
+#pragma acc data copy(A[0:N])
+{
+  #pragma acc parallel loop
+  for(int i=0;i<N;i++) A[i]*=2;
+}
+ 
+Best statement:
+
+Moves A to device and back once for the region.
+Keeps A host-only and mirrors results.
+Forces unified memory.
+Requires wait to copy back.
+Disables parallelization.
+Feedback
+copy copies to device on entry and back on exit, minimizing transfers as taught in the data-region slides.
+Question 69
+69
+MULTIPLE CHOICE
+What will be the output of the following OpenMP code, considering the correct use of data-sharing clauses?
+#include <omp.h>
+#include <stdio.h>
+ 
+int main() {
+   int x = 10;
+   
+   #pragma omp parallel default(none) shared(x)
+   {
+       int y = x + omp_get_thread_num();
+       printf("Thread %d has y = %d\n", omp_get_thread_num(), y);
+   }
+   return 0;
+}
+
+"Thread 0 has y = 12", "Thread 1 has y = 13", ..., up to the number of threads.
+"Thread 0 has y = 0", "Thread 1 has y = 1", ..., with unpredictable values.
+A compilation error due to missing shared clause.
+"Thread 0 has y = 10" repeated for each thread.
+"Thread x has y = x" for all threads.
+"Thread 0 has y = 10", "Thread 1 has y = 11", ..., up to the number of threads.
+Feedback
+The default(none) clause requires explicit data-sharing attributes. The shared(x) clause allows all threads to access the same x value, and each thread computes y based on its thread number. This demonstrates understanding how data-sharing attributes affect variable visibility and manipulation.
+Question 70
+70
+MULTIPLE CHOICE
+What is true about Commodity Cluster?
+
+is a form of HPC assembled from commercially manufactured subsystems
+cluster “node” is a computer that can be directly employed individually as a PC
+Provides economy of scale to increase performance to cost dramatically compared to custom-designed MPPs of the same scale
+Examples are Touchstone Paragon (1994), the Thinking Machines Corporation CM-5 (1992), and the IBM SP-2
+Question 71
+71
+MULTIPLE CHOICE
+Historically supercomputers have been applied to science and engineering, and the methodology has been described as the “third pillar of science” alongside and complementing what other pillars?
+
+Experimentation (empiricism) and Mathematics (theory)
+Simulation and Mathematics (theory)
+Empiricism and Simulation 
+Experimentation (empiricism) and Simulation
+Question 72
+72
+MULTIPLE CHOICE
+ 
+int i = blockIdx.x*blockDim.x + threadIdx.x;
+y[i] = a*x[i] + y[i];
+ 
+Which mapping best favors coalesced reads of x/y?
+
+ Stride-k access with i*=k
+Reverse index i = n-1-i
+Contiguous i as shown
+Randomized i per thread
+Even/odd split (evens then odds)
+Feedback
+ Contiguous per-thread indices enable warps to fetch adjacent addresses in a single transaction; slides emphasize memory throughput.
+Question 73
+73
+MULTIPLE CHOICE
+Consider the following MPI code that defines a custom data type. What will be the output when the program is executed with 2 processes?
+ 
+#include <mpi.h>
+#include <stdio.h>
+#include <stddef.h>
+ 
+struct Particle {
+   int id;
+   double mass;
+   char type;
+};
+ 
+int main(int argc, char *argv[]) {
+   MPI_Init(&argc, &argv);
+ 
+   int rank;
+   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+ 
+   MPI_Datatype particle_type;
+   int block_lengths[3] = {1, 1, 1};
+   MPI_Aint displacements[3];
+   MPI_Datatype types[3] = {MPI_INT, MPI_DOUBLE, MPI_CHAR};
+ 
+   displacements[0] = offsetof(struct Particle, id);
+   displacements[1] = offsetof(struct Particle, mass);
+   displacements[2] = offsetof(struct Particle, type);
+ 
+   MPI_Type_create_struct(3, block_lengths, displacements, types, &particle_type);
+   MPI_Type_commit(&particle_type);
+ 
+   struct Particle my_particle;
+   if (rank == 0) {
+       my_particle.id = 1;
+       my_particle.mass = 2.5;
+       my_particle.type = 'A';
+       MPI_Send(&my_particle, 1, particle_type, 1, 0, MPI_COMM_WORLD);
+   } else if (rank == 1) {
+       MPI_Recv(&my_particle, 1, particle_type, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+       printf("Received Particle: id=%d, mass=%f, type=%c\n", my_particle.id, my_particle.mass, my_particle.type);
+   }
+ 
+   MPI_Type_free(&particle_type);
+   MPI_Finalize();
+   return 0;
+}
+
+Received Particle: id=1, mass=2.5, type=A
+Received Particle: id=1, mass=0.0, type=B
+Received Particle: id=0, mass=0.0, type=A
+Received Particle: id=1, mass=2.5, type=B
+The program will not compile due to errors in type handling.
+Feedback
+Correct! The program will print "Received Particle: id=1, mass=2.5, type=A" on Rank 1.
+Question 74
+74
+MULTIPLE CHOICE
+Pick the smallest change to make the code safe without adding barriers:
+
+// ring: send to north, recv from south, then recv north, send south
+int north = (rank + 1) % size;
+int south = (rank - 1 + size) % size;
+double my = computeLocalWeather();    // pretend
+double northVal, southVal;
+
+MPI_Send(&my, 1, MPI_DOUBLE, north, 0, MPI_COMM_WORLD);
+MPI_Recv(&southVal, 1, MPI_DOUBLE, south, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+MPI_Recv(&northVal, 1, MPI_DOUBLE, north, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+MPI_Send(&my, 1, MPI_DOUBLE, south, 0, MPI_COMM_WORLD);
+
+Replace the first MPI_Send with MPI_Isend and MPI_Wait it after the matching Recv.
+Add MPI_Barrier before the first Send.
+Change tags to different values (0→1).
+Use synchronous send MPI_Ssend.
+ Set both neighbors to MPI_ANY_SOURCE.
+Feedback
+Posting a non-blocking send breaks the send-first cycle; later MPI_Wait completes it after the receives are posted. Slides show MPI_Isend/MPI_Irecv + MPI_Wait to avoid deadlock while overlapping with work. Barriers don’t fix the fundamental cycle.
+Question 75
+75
+MULTIPLE CHOICE
+Performance Monitoring When optimizing a high-performance computing application, performance monitoring is crucial to:
+
+Visualize 3D datasets.
+Solve partial differential equations.
+Decompose meshes.
+Process signals.
+Identify bottlenecks and inefficiencies in the code.
+Feedback
+Identify bottlenecks and inefficiencies in the code. Explanation: Performance monitoring tools, like PAPI or Vampir, help in collecting performance metrics. By analyzing these metrics, developers can identify parts of the code that are inefficient or causing performance bottlenecks, enabling them to optimize the application effectively.
+Question 76
+76
+MULTIPLE CHOICE
+Which role does machine learning play in optimizing I/O operations in HPC environments?
+
+Encrypting data before it is stored.
+Predicting future data access patterns to optimize caching and data placement.
+Automatically scaling storage capacity based on usage.
+Reducing the need for metadata management.
+Compressing data to save storage space.
+Feedback
+Machine learning algorithms can analyze past I/O patterns to predict future access needs, allowing for more efficient caching and data placement strategies.
+Question 77
+77
+MULTIPLE CHOICE
+Predict the output pattern (qualitatively) and choose the true statement:
+ 
+#include <omp.h>
+#include <stdio.h>
+ 
+int main() {
+    int data_initialized = 0;
+ 
+    #pragma omp parallel
+    {
+        #pragma omp master
+        {
+            // executed only by the master thread
+            printf("Master thread initializing data\n");
+            data_initialized = 1;
+        }
+ 
+        #pragma omp single
+        {
+            // executed by exactly one (any) thread
+            printf("Single thread handling setup\n");
+        }
+ 
+        #pragma omp barrier
+ 
+        #pragma omp critical
+        {
+            printf("Thread %d: data_initialized = %d\n",
+                   omp_get_thread_num(), data_initialized);
+        }
+    }
+}
+ 
+
+The “master” block may run multiple times; use single to restrict.
+The program deadlocks because master implies an implicit barrier not reached by others.
+Output prints the “master” line once, the “single” line once, then every thread reports data_initialized = 1 in some order.
+data_initialized is a private variable in single; others see 0.
+To make it correct you must add flush statements.
+Feedback
+master executes only on the master; single executes once on whichever thread gets there first; the explicit barrier ensures all have seen the initialization; critical just serializes printing. Slides explain master, single, barrier, and critical semantics and show this style of example and expected behavior.
+Question 78
+78
+MULTIPLE CHOICE
+In a scientific simulation, you need to compute the total kinetic energy of particles in a system. Given the shared nature of the total energy variable, which OpenMP tool or construct can ensure that updates to this shared variable are performed atomically, avoiding race conditions?
+
+atomic: Ensures a specific memory location is updated atomically.
+parallel: Creates a team of threads.
+barrier: Synchronizes all threads in a team.
+private: Gives each thread its own copy of a variable.
+schedule: Determines how iterations of a loop are assigned to threads.
+Feedback
+atomic Explanation: The atomic directive ensures atomic updates to specific memory locations, preventing race conditions when multiple threads try to update the same memory location.
+Question 79
+79
+MULTIPLE CHOICE
+ 
+#pragma acc kernels copyin(m[:N][:N], v[:N]) copyout(b[:N])
+for(int i=0;i<N;i++){
+  b[i]=0;
+  for(int j=0;j<N;j++) b[i]+=m[i][j]*v[j];
+}
+ 
+Why these clauses?
+
+To allocate but never move data.
+To bring m,v to device and return b to host.
+To make all arrays private.
+ To pin host memory.
+ To enable unified memory.
+Feedback
+copyin for inputs; copyout for outputs is the exact pattern used in the slides’ dynamic allocation example.
+Question 80
+80
+MULTIPLE CHOICE
+The following OpenACC program aims to perform element-wise multiplication of two matrices. What data management strategy should be implemented to ensure efficient execution?
+ 
+#include <stdio.h>
+ 
+#define N 1024
+ 
+void matrixMultiply(float A[N][N], float B[N][N], float C[N][N]) {
+   #pragma acc parallel loop
+   for (int i = 0; i < N; i++) {
+       for (int j = 0; j < N; j++) {
+           C[i][j] = A[i][j] * B[i][j];
+       }
+   }
+}
+ 
+int main() {
+   float A[N][N], B[N][N], C[N][N];
+ 
+   // Initialize matrices
+   for (int i = 0; i < N; i++) {
+       for (int j = 0; j < N; j++) {
+           A[i][j] = 1.0;
+           B[i][j] = 2.0;
+       }
+   }
+ 
+   // Perform multiplication
+   matrixMultiply(A, B, C);
+ 
+   // Verify result
+   printf("C[0][0] = %f\n", C[0][0]);
+   return 0;
+}
+
+Use #pragma acc data copy(A, B, C) to manage data.
+Utilize #pragma acc data copyin(A, B) copyout(C) for efficient data transfer.
+Implement #pragma acc parallel loop gang for parallel execution.
+Use #pragma acc data present(A, B, C) to check data locality.
+Data management is not required as arrays are small.
+Feedback
+Using #pragma acc data copyin(A, B) copyout(C) ensures efficient data transfer by copying input matrices A and B to the device and copying the result matrix C back to the host. This approach minimizes data movement overhead and optimizes performance by clearly managing data scope and transfer.
+Question 81
+81
+MULTIPLE CHOICE
+Why are high-speed interconnects like InfiniBand crucial for parallel filesystems in HPC environments?
+
+They reduce the cost of storage devices.
+They increase the storage capacity of the filesystem.
+They facilitate fast data transfers between compute nodes and storage systems, reducing latency.
+They simplify the management of metadata across nodes.
+They provide better data redundancy.
+Feedback
+High-speed interconnects like InfiniBand provide the necessary bandwidth and low latency required for efficient data movement in HPC environments.
+Question 82
+82
+MULTIPLE CHOICE
+What is true about Reliability? (there are multiple answers)
+
+The bigger the system, the most faults will have. 
+“Hard” faults is when a part of the hardware breaks permanently
+“Soft” fault a when the Software brakes permanently 
+“Soft” fault is when a part intermittently fails but otherwise operates correctly.
+We can use checkpoint/restart to prevent software errors
+Question 83
+83
+MULTIPLE CHOICE
+Select the correct words:
+HPC architecture exploits its enabling technologies to _______ time to solution, ________throughput of operation, and serve the class of computations associated with ________, usually ______-intensive, applications.
+
+Maximize, Minimize, small , numeric
+Maximize, Minimize, large , data
+Minimize, Maximize, large, numeric
+Maximize, Maximize, large , data
+Question 84
+84
+MULTIPLE CHOICE
+Which OpenACC directive would you use to ensure that a nested loop over a two-dimensional array is efficiently parallelized across available GPU resources, and why?
+
+#pragma acc parallel
+#pragma acc loop collapse(2)
+#pragma acc data copy
+#pragma acc atomic
+#pragma acc serial
+Feedback
+The #pragma acc loop collapse(2) directive is used to combine the iterations of nested loops into a single loop, maximizing parallel execution by allowing both loops to be executed concurrently across available GPU cores. This approach increases parallelism and can significantly improve performance for operations on two-dimensional arrays.
+Question 85
+85
+MULTIPLE CHOICE
+In a molecular dynamics simulation, pairwise force calculations between particles are a performance bottleneck. How would you optimize this calculation to improve throughput on a modern HPC system?
+
+Convert the code to a scripting language for better readability.
+Use SIMD vectorization to compute forces between multiple pairs of particles simultaneously.
+Replace all floating-point calculations with integer arithmetic.
+Increase the number of conditional checks to avoid unnecessary calculations.
+Use single-threaded execution to avoid race conditions.
+Feedback
+SIMD vectorization allows for the parallel computation of multiple particle-pair interactions in a single instruction cycle, which significantly boosts throughput in molecular dynamics simulations. This is particularly important when the same operation needs to be applied to a large number of data points.
+Question 86
+86
+MULTIPLE CHOICE
+In a parallel filesystem like Lustre, what role does the Metadata Server (MDS) play, and why is it crucial for performance?
+
+It stores all the data blocks across the storage devices.
+It manages the communication between compute nodes and storage devices.
+It handles metadata operations such as file attributes and directory structures, ensuring efficient data access.
+It encrypts data before storing it in the filesystem.
+It monitors and manages network traffic within the HPC cluster.
+Feedback
+The MDS is critical because it manages the metadata, which helps locate files and manage permissions, significantly affecting the performance of data retrieval in large-scale environments.
+Question 87
+87
+MULTIPLE CHOICE
+Please select the sentences that are true regarding HPC
+
+HPC architecture is concerned with only the lowest-level technologies and circuit design.
+The cost of the software on an HPC system is much less than the cost of the hardware platform.
+The greater the performance that is required, the harder it is to optimize the user program.
+Code reuse is critical to managing application development complexity and difficulty.
+Question 88
+88
+MULTIPLE CHOICE
+You define:
+ 
+typedef struct { int max_iter; double t0, tf, xmin; } Pars;
+int nitems=4, bl[4]={1,1,1,1};
+MPI_Datatype types[4]={MPI_INT,MPI_DOUBLE,MPI_DOUBLE,MPI_DOUBLE};
+MPI_Aint offs[4]={offsetof(Pars,max_iter),offsetof(Pars,t0),
+                  offsetof(Pars,tf),offsetof(Pars,xmin)};
+MPI_Datatype mpi_par;
+MPI_Type_create_struct(nitems,bl,offs,types,&mpi_par);
+MPI_Type_commit(&mpi_par);
+ 
+if (rank==0) { Pars p={10,0.0,1.0,-5.0}; MPI_Bcast(&p,1,mpi_par,0,MPI_COMM_WORLD); }
+// all ranks print p.max_iter
+ 
+What’s true?
+
+ Incorrect; must MPI_Pack/MPI_Unpack.
+Correct: committed struct type allows direct send/collectives.
+Works only if all ranks are x86-64.
+Need at least MPI_Scatter for structs.
+Must use MPI_INT64_T for int.
+Feedback
+MPI_Type_create_struct + MPI_Type_commit + MPI_Bcast flow; offsetof produces portable displacements for the in-process ABI.  
+Question 89
+89
+MULTIPLE CHOICE
+Weather forecasting models on HPC systems often involve large-scale matrix operations. What data structure choice would most efficiently utilize the system's memory hierarchy?
+
+Using linked lists to store matrix data.
+Using arrays with contiguous memory allocation.
+Using hash tables for matrix storage.
+Using dynamic memory allocation for each matrix element.
+Storing data on disk and accessing it as needed.
+Feedback
+Arrays with contiguous memory allocation are ideal for large-scale matrix operations in weather forecasting models because they optimize cache utilization and memory access patterns. This results in faster data access and improved performance on HPC systems.
+Question 90
+90
+MULTIPLE CHOICE
+You are optimizing a computational task on a supercomputer known for its high energy consumption. Which of the following strategies would most effectively reduce the energy usage of your computation?
+
+Increasing the clock speed of the processors.
+Reducing the precision of calculations (e.g., from double to single precision).
+Running the computation in a single thread.
+Disabling all power-saving features of the hardware.
+Rewriting the code in a more energy-efficient programming language.
+Feedback
+Reducing the precision of calculations can significantly lower the energy consumption of a computational task, especially if the application does not require high precision. This approach can reduce the workload on the processors and decrease power usage, making it an effective strategy for optimizing energy efficiency in HPC.
+Question 91
+91
+MULTIPLE CHOICE
+You are responsible for running a large-scale simulation on an HPC cluster, where tasks vary significantly in computational intensity. You aim to achieve optimal load balancing using OpenMP.
+Assess the code below and recommend the best scheduling strategy to ensure efficient use of resources.
+#include <omp.h>
+#include <stdio.h>
+ 
+#define NUM_TASKS 100
+ 
+void perform_task(int task_id) {
+   // Simulate variable workload
+   for (int i = 0; i < task_id * 1000; i++);
+   printf("Task %d completed\n", task_id);
+}
+ 
+int main() {
+   #pragma omp parallel for schedule(static)
+   for (int i = 0; i < NUM_TASKS; i++) {
+       perform_task(i);
+   }
+ 
+   return 0;
+}
+
+Retain schedule(static) for predictability, despite workload imbalance.
+Use schedule(guided) to gradually decrease chunk size, optimizing both balance and overhead.
+Use schedule(dynamic) to dynamically assign tasks, adapting to variable workload efficiently.
+Implement schedule(runtime) for flexibility based on environment variables.
+Avoid scheduling directives, letting threads handle workload variability naturally.
+Feedback
+The schedule(dynamic) directive adapts to variable workload by dynamically assigning tasks to threads, ensuring that each thread receives new work as soon as it completes a task, achieving effective load balancing in large-scale simulations.
+Question 92
+92
+MULTIPLE CHOICE
+What is one key advantage of using containers like Singularity in HPC environments?
+
+Requires root privileges to run
+Offers full hardware virtualization
+Provides lightweight, user-level containerization
+Increases overhead compared to VMs
+Limits flexibility in resource allocation
+Feedback
+Correct! Singularity provides lightweight, user-level containerization in HPC environments.
+Question 93
+93
+MULTIPLE CHOICE
+What is the correct output of the following C program that computes the Fast Fourier Transform (FFT) of a 1D array using the FFTW library?
+#include <fftw3.h>
+#include <stdio.h>
+#include <math.h>
+ 
+int main() {
+   int N = 4; // Size of the array
+   fftw_complex in[N], out[N];
+   fftw_plan plan;
+ 
+   // Initialize input array with a simple pattern
+   for (int i = 0; i < N; i++) {
+       in[i][0] = i; // Real part
+       in[i][1] = 0.0; // Imaginary part
+   }
+ 
+   // Create a plan for FFT
+   plan = fftw_plan_dft_1d(N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+ 
+   // Execute the FFT
+   fftw_execute(plan);
+ 
+   // Print the output
+   printf("FFT output:\n");
+   for (int i = 0; i < N; i++) {
+       printf("(%2.2f, %2.2f)\n", out[i][0], out[i][1]);
+   }
+ 
+   // Clean up
+   fftw_destroy_plan(plan);
+ 
+   return 0;
+}
+
+(6.00, 0.00)
+(-2.00, 2.00)
+(-2.00, 0.00)
+(-2.00, -2.00)
+(10.00, 0.00)
+(-2.00, 2.00)
+(-2.00, 0.00)
+(-2.00, -2.00)
+(0.00, 0.00)
+(-4.00, 4.00)
+(-4.00, 0.00)
+(-4.00, -4.00)
+(6.00, 0.00)
+(-4.00, 4.00)
+(0.00, 0.00)
+(-4.00, -4.00)
+(6.00, 0.00)
+(-4.00, 4.00)
+(-4.00, 0.00)
+(-4.00, -4.00)
+Feedback
+The FFTW library calculates the discrete Fourier transform of the input array. The output values match the result of applying the FFT to the input array [0, 1, 2, 3], leading to the results provided in option A.
+Question 94
+94
+MULTIPLE CHOICE
+Consider the following pseudocode for a parallel matrix multiplication using OpenMP. What is the purpose of the #pragma omp parallel for directive?
+matrix_multiply(A, B, C, N):
+   #pragma omp parallel for
+   for i = 0 to N-1:
+       for j = 0 to N-1:
+           C[i][j] = 0
+           for k = 0 to N-1:
+               C[i][j] = C[i][j] + A[i][k] * B[k][j]
+
+It defines a critical section for synchronization.
+It initializes the parallel environment.
+It distributes the outer loop iterations across multiple threads.
+It combines the results from different threads.
+It ensures the loop is executed sequentially.
+Feedback
+Correct! The #pragma omp parallel for directive distributes the outer loop iterations across multiple threads.
+Question 95
+95
+MULTIPLE CHOICE
+Library BLAS Levels 2 and 3 names are of the form cblas_pmmoo, where the p indicates the ______, mm indicates the ____ type, and oo indicates the _________
+
+Position, matrix, objects
+Precision, matrix, operation
+Position, malloc object, operation
+None of the above
+Feedback
+BLAS Level 2 and Level 3 operations involve matrices, and indicate the type of matrix they support in their name. Levels 2 and 3 names are of the form cblas_pmmoo, where the p indicates the precision, mm indicates the matrix type, and oo indicates the operation
+Question 96
+96
+MULTIPLE CHOICE
+Apple's M1 chip is known for its impressive performance in both high-end tasks like video editing and everyday tasks like browsing. The chip contains a combination of high-performance and energy-efficient cores. This diverse mixture of cores on a single chip is an example of what computing structure?
+
+Monolithic Computing
+Heterogeneous Computing
+Homogeneous Computing
+Singular Computing
+Binary Computing
+Feedback
+Heterogeneous computing involves using different types of processors or cores in a system, each optimized for specific tasks. The M1 chip's combination of high-performance and energy-efficient cores is an embodiment of this concept.
+Question 97
+97
+MULTIPLE CHOICE
+Given the following MPI code snippet, what will be the output if the program is executed with 4 processes?
+#include <mpi.h>
+#include <stdio.h>
+ 
+int main(int argc, char *argv[]) {
+   MPI_Init(&argc, &argv);
+ 
+   int rank, size;
+   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+   MPI_Comm_size(MPI_COMM_WORLD, &size);
+ 
+   int data = rank * 10;
+   if (rank == 0) {
+       MPI_Send(&data, 1, MPI_INT, 1, 0, MPI_COMM_WORLD);
+       MPI_Recv(&data, 1, MPI_INT, 3, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+       printf("Rank 0 received %d from Rank 3\n", data);
+   } else if (rank == 1) {
+       MPI_Recv(&data, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+       data += 5;
+       MPI_Send(&data, 1, MPI_INT, 2, 0, MPI_COMM_WORLD);
+   } else if (rank == 2) {
+       MPI_Recv(&data, 1, MPI_INT, 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+       data += 5;
+       MPI_Send(&data, 1, MPI_INT, 3, 0, MPI_COMM_WORLD);
+   } else if (rank == 3) {
+       MPI_Recv(&data, 1, MPI_INT, 2, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+       MPI_Send(&data, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+   }
+ 
+   MPI_Finalize();
+   return 0;
+}
+
+Rank 0 received 0 from Rank 3
+Rank 0 received 5 from Rank 3
+Rank 0 received 10 from Rank 3
+Rank 0 received 15 from Rank 3
+Rank 0 received 20 from Rank 3
+Feedback
+Correct! Rank 0 received 10 from Rank 3 after the data was incremented by 5 in each process.
+To determine the output of the provided MPI code, we need to follow the data as it is sent between processes:
+Initialization:
+Each process initializes data as rank * 10.
+Rank 0: data = 0 * 10 = 0
+Rank 1: data = 1 * 10 = 10
+Rank 2: data = 2 * 10 = 20
+Rank 3: data = 3 * 10 = 30
+Communication:
+Rank 0 sends its data (0) to Rank 1.
+Rank 1 receives data from Rank 0 (value 0), adds 5 to it, making data = 5, and sends it to Rank 2.
+Rank 2 receives data from Rank 1 (value 5), adds 5 to it, making data = 10, and sends it to Rank 3.
+Rank 3 receives data from Rank 2 (value 10) and sends it back to Rank 0.
+Rank 0 receives data from Rank 3 (value 10).
+Output:
+After the communication completes, Rank 0 will print the received value.
+The output of this program will be: Rank 0 received 10 from Rank 3
+This reflects the value that was passed from Rank 0 to Rank 1, incremented by 5 each at Ranks 1 and 2, and finally received back by Rank 0 from Rank 3.
+Question 98
+98
+MULTIPLE CHOICE
+You prototype a 1-D ring for a weather stencil:
+ 
+// ring: send to north, recv from south, then recv north, send south
+int north = (rank + 1) % size;
+int south = (rank - 1 + size) % size;
+double my = computeLocalWeather();        // pretend
+double northVal, southVal;
+ 
+MPI_Send(&my, 1, MPI_DOUBLE, north, 0, MPI_COMM_WORLD);
+MPI_Recv(&southVal, 1, MPI_DOUBLE, south, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+MPI_Recv(&northVal, 1, MPI_DOUBLE, north, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+MPI_Send(&my, 1, MPI_DOUBLE, south, 0, MPI_COMM_WORLD);
+ 
+What’s the most realistic outcome on many ranks?
+
+Always terminates; point-to-point is ordered.
+May hang due to circular wait on blocking sends/recvs.
+Always works if size is even.
+Always works if rank==0 posts its Recv first.
+Will reorder messages automatically to avoid cycles.
+Feedback
+All ranks “send first” → no one is posted to receive yet; with blocking MPI_Send/MPI_Recv, this can deadlock. Slides call this out and propose non-blocking or consistent send/recv ordering as a fix.
+Question 99
+99
+MULTIPLE CHOICE
+You have integrated Scalable Checkpoint/Restart (SCR) into an MPI-based simulation. How can SCR help in reducing the checkpoint overhead, and what additional strategies can you implement to further minimize the impact of checkpointing on the application's performance?
+
+SCR uses compression to reduce checkpoint file size; increase checkpoint frequency.
+SCR allows node-local storage; combine this with incremental checkpointing.
+SCR uses selective state saving; reduce checkpoint frequency to minimize overhead.
+SCR manages parallel I/O efficiently; increase the number of I/O nodes.
+SCR performs asynchronous checkpointing; use coordinated checkpointing instead.
+Feedback
+SCR reduces checkpoint overhead by leveraging node-local storage and managing redundancy. Combining this with incremental checkpointing, where only changes since the last checkpoint are saved, can further minimize overhead.
+Question 100
+100
+MULTIPLE CHOICE
+An astrophysics research team uses MPI to model galaxy formation, where each process simulates a section of the galaxy. They need to ensure that gravitational interactions are accurately computed across sections. How should the researchers implement communication to manage these interactions efficiently in an environment with 128 processes?
+
+Use MPI_Alltoall to share particle data among all processes.
+Implement a Barnes-Hut algorithm using MPI_Isend and MPI_Irecv for adaptive load balancing.
+Use MPI_Bcast to distribute central gravitational data from a root process.
+Apply domain decomposition with periodic MPI_Reduce operations to compute interactions.
+Use MPI_Scatterv and MPI_Gatherv for variable-sized data distribution and collection.
+Feedback
+Correct! The Barnes-Hut algorithm with non-blocking communication is well-suited for efficiently managing gravitational interactions in large-scale simulations.
+ ×
