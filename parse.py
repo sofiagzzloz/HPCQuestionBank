@@ -14,7 +14,8 @@ def parse_question_file(filepath):
         text = f.read()
 
     # Split based on Blackboard-style "Question X ... Question X"
-    question_blocks = re.split(r"Question\s+\d+\s+1\s+Point\s+Question\s+\d+", text)
+    question_blocks = re.split(r"Question\s+\d+.*?Point", text, flags=re.DOTALL)
+
     data = []
 
     for block in question_blocks:
