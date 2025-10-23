@@ -1,0 +1,807 @@
+Consider a parallel filesystem using data striping to improve I/O performance. How does data striping work, and what is its primary benefit?
+
+Data is compressed before storage, reducing space but not affecting performance.
+
+Data is mirrored across multiple storage devices, improving fault tolerance.
+
+Data is encrypted across all storage devices to enhance security.
+
+Data blocks are distributed across multiple storage devices, allowing simultaneous access by multiple processes.
+
+Data is stored sequentially on a single storage device to maximize read/write speeds.
+
+Question 2
+2
+Multiple Choice
+Which filesystem would you choose for a high-performance computing (HPC) application that requires high concurrency and large-scale data processing, and why?
+
+HDFS because it offers redundancy and parallel data access.
+
+Ext4 because it is highly reliable for single-machine environments.
+
+NTFS because it is compatible with Windows operating systems.
+
+NFS because it is simple to implement and widely supported.
+
+Lustre because it is optimized for high concurrency and massive data throughput.
+
+Question 3
+3
+Multiple Choice
+Mesh Decomposition in Aerospace Engineering An aerospace engineer is working on a simulation of airflow over an aircraft wing. To ensure parallel computing efficiency, the engineer needs to decompose the computational mesh around the wing. Which tool specializes in this?
+
+Boost MPI - C++ interface for Message Passing Interface.
+
+METIS - Efficiently decomposes graphs and meshes for parallel computing.
+
+ELPA - Performs matrix operations.
+
+SuperLU - Solves systems of linear equations.
+
+VTK - Used for 3D data visualization.
+
+Question 4
+4
+Multiple Choice
+You are integrating checkpointing into a large-scale HPC application using DMTCP (Distributed MultiThreaded CheckPointing). What are the key considerations to ensure minimal performance impact while maintaining robust fault tolerance?
+
+The precision of floating-point operations, the cache size, and the number of I/O operations.
+
+The number of nodes involved, the frequency of synchronization, and the CPU clock speed.
+
+The checkpoint interval, the size of checkpoint files, and the overhead of network communication.
+
+The number of threads used, the file system type, and the memory usage of the application.
+
+The use of hardware counters, the clock speed of the CPU, and the size of the application binaries.
+
+Question 5
+5
+Multiple Choice
+You are profiling an HPC application using Perf and notice that a significant amount of time is spent in system calls. What could this indicate about your application, and what might be a possible optimization strategy?
+
+Indicates insufficient parallelism; refactor code to use more cores.
+
+Indicates excessive network communication; reduce communication overhead.
+
+Indicates frequent memory allocation; optimize memory usage or batch operations.
+
+Indicates inefficient disk I/O; optimize file access patterns.
+
+Indicates poor CPU utilization; consider increasing thread count.
+
+Question 6
+6
+Multiple Choice
+Linear Algebra in HPC Which of the following is NOT a function of Basic Linear Algebra Subprograms (BLAS)?
+
+Vector scaling
+
+Matrix-vector product
+
+Dot product
+
+Vector addition
+
+Matrix inversion
+
+Question 7
+7
+Multiple Choice
+The following code uses a linked list to sum its elements. What is a major drawback of using a linked list in this context, particularly in an HPC environment?
+
+
+
+struct Node {
+   int data;
+   struct Node* next;
+};
+ 
+int sum_linked_list(struct Node* head) {
+   int sum = 0;
+   struct Node* current = head;
+   while (current != NULL) {
+       sum += current->data;
+       current = current->next;
+   }
+   return sum;
+}
+Linked lists have poor data locality, leading to inefficient cache usage.
+
+Linked lists use more memory than arrays.
+
+Linked lists are more complex to implement.
+
+Linked lists are harder to parallelize.
+
+Linked lists require dynamic memory allocation.
+
+Question 8
+8
+Multiple Choice
+A developer needs to implement checkpointing in an application that runs on a heterogeneous HPC environment (combining CPUs and GPUs). Which checkpointing strategy and tool combination would be most suitable, considering performance and complexity?
+
+System-level checkpointing with BLCR; handles all components transparently
+
+Uncoordinated checkpointing with Valgrind; suitable for diverse environments
+
+Application-level checkpointing with SCR; tailored to specific application needs
+
+Coordinated checkpointing with DMTCP; manages CPU-GPU interactions
+
+Incremental checkpointing with PAPI; focuses on hardware counters
+
+Question 9
+9
+Multiple Choice
+A genomics data analysis algorithm scales poorly as the number of processors increases on an HPC system. What is the most likely cause of this scalability issue?
+
+The algorithm has excessive inter-processor communication.
+
+The algorithm's time complexity is too low.
+
+The input data is too small to benefit from parallelism.
+
+The algorithm uses too much memory.
+
+The code is written in a high-level programming language.
+
+Question 10
+10
+Multiple Choice
+Which of the following challenges is most likely to arise when scaling I/O operations in HPC systems with a large number of compute nodes?
+
+Redundant data processing across multiple nodes.
+
+Contention and delays due to a single metadata server becoming a bottleneck.
+
+Decreased disk seek times leading to faster data access.
+
+Excessive network bandwidth that exceeds available capacity.
+
+Increased CPU processing time due to more data.
+
+Question 11
+11
+Multiple Choice
+How does non-volatile memory (NVM) technology like Intel Optane impact I/O performance in HPC systems?
+
+It increases the need for frequent backups.
+
+It simplifies the file system management process.
+
+It increases latency due to slower access speeds.
+
+It reduces data redundancy in the system.
+
+It provides high-speed, persistent storage, reducing I/O latency and enhancing data availability.
+
+Question 12
+12
+Multiple Choice
+Which of the following is a direct consequence of I/O bottlenecks in a high-performance computing (HPC) system?
+
+Increased CPU utilization.
+
+Idle CPU cycles waiting for data.
+
+Reduced storage capacity.
+
+Faster data retrieval times.
+
+Improved data redundancy.
+
+Question 13
+13
+Multiple Choice
+You are profiling a C++ application using gprof. After compiling and running the program with gprof instrumentation, you receive the following output:
+
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+
+ %  cumulative  self             self    total          
+ time  seconds  seconds   calls  ms/call ms/call name   
+ 60.00     0.60    0.60    1000    0.60    0.60 compute
+ 40.00     1.00    0.40                            main
+Given this output, what would be the most effective optimization strategy?
+
+Optimize the compute function for better cache performance.
+
+Inline the main function.
+
+Use a different profiling tool with lower overhead.
+
+Increase the sampling rate in gprof.
+
+Reduce the number of calls to compute.
+
+Question 14
+14
+Multiple Choice
+You are using TAU (Tuning and Analysis Utilities) to profile a parallel application and notice that some processes are spending a significant amount of time in the MPI_Wait function. What does this suggest, and how might you optimize the application?
+
+The application has excessive I/O operations; reduce I/O frequency.
+
+The processes are not properly synchronized; implement a better locking mechanism.
+
+The network bandwidth is insufficient; upgrade the network infrastructure.
+
+The application has too many MPI barriers; reduce the number of barriers.
+
+There is a load imbalance; redistribute work among processes.
+
+Question 15
+15
+Multiple Choice
+In a memory-bound HPC application, you observe that the majority of time is spent waiting for memory accesses. Which profiling tool would help you identify the specific causes of memory stalls, and what kind of optimizations could you consider?
+
+Intel VTune Amplifier; improve cache locality or increase memory bandwidth
+
+Gprof; optimize function call hierarchy.
+
+Scalasca; balance workload distribution
+
+Perf; increase the number of CPU cores
+
+Valgrind Massif; reduce memory footprint.
+
+Question 16
+16
+Multiple Choice
+In an image processing application running on an HPC system, the memory bandwidth is the primary bottleneck. Which technique would most likely improve performance?
+
+Increasing the size of the images being processed.
+
+Converting the images to grayscale before processing.
+
+Using higher precision for image pixel values.
+
+Using loop tiling and prefetching to optimize data access patterns.
+
+Storing images as linked lists for faster access.
+
+Question 17
+17
+Multiple Choice
+In a molecular dynamics simulation, pairwise force calculations between particles are a performance bottleneck. How would you optimize this calculation to improve throughput on a modern HPC system?
+
+Use single-threaded execution to avoid race conditions.
+
+Increase the number of conditional checks to avoid unnecessary calculations.
+
+Replace all floating-point calculations with integer arithmetic.
+
+Convert the code to a scripting language for better readability.
+
+Use SIMD vectorization to compute forces between multiple pairs of particles simultaneously.
+
+Question 18
+18
+Multiple Choice
+What is true about FFTW “fastest Fourier transform in the West” signal processing Library?
+
+Supports distributed-memory architectures with MPI
+
+It is used in the molecular dynamics toolkits NAMD and Gromacs
+
+All of the above
+
+Supports SMP architectures with threads
+
+optimized for speed by means of a special-purpose codelet generator called “genfft”, which actually produces the C code that is used
+
+Question 19
+19
+Multiple Choice
+Given the following loop intended for parallel execution using OpenMP, identify the issue with the parallelization strategy:
+
+void scale_array(float* array, int n, float scalar) {
+   #pragma omp parallel for
+   for (int i = 0; i < n; i++) {
+       array[i] *= scalar;
+   }
+}
+The use of scalar in the loop might cause incorrect results due to data races.
+
+The loop cannot be parallelized because the array elements depend on each other.
+
+The code will result in a race condition.
+
+The array should be split into chunks manually for parallel processing.
+
+There is no issue; the loop is correctly parallelized.
+
+Question 20
+20
+Multiple Choice
+Question: Given the following code snippet using OpenMP to parallelize a matrix-vector multiplication, what will be the expected output for the resulting vector y?
+
+#include <omp.h>
+#include <stdio.h>
+ 
+int main() {
+   int n = 3;
+   double A[3][3] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+   double x[3] = {1, 2, 3};
+   double y[3] = {0};
+ 
+   #pragma omp parallel for
+   for (int i = 0; i < n; i++) {
+       for (int j = 0; j < n; j++) {
+           y[i] += A[i][j] * x[j];
+       }
+   }
+ 
+   printf("Resulting vector y:\n");
+   for (int i = 0; i < n; ++i) {
+       printf("%f ", y[i]);
+   }
+   printf("\n");
+ 
+   return 0;
+}
+12.00 30.00 48.00
+
+6.00 15.00 24.00
+
+14.00 28.00 42.00
+
+30.00 36.00 42.00
+
+14.00 32.00 50.00
+
+Question 21
+21
+Multiple Choice
+Understanding LAPACK Routines. Which LAPACK routine would you use to efficiently solve a system of linear equations Ax = b, where A is a square matrix, and what is the general structure of this routine’s name?
+
+dgetrf, where X = matrix type, YY = data type, ZZZ = operation
+
+dgeqrf, where X = operation, YY = matrix type, ZZZ = data type
+
+dgemm, where X = data type, YY = operation, ZZZ = matrix type
+
+dgesv, where X = data type, YY = matrix type, ZZZ = operation
+
+dgeev, where X = data type, YY = operation, ZZZ = matrix type
+
+Question 22
+22
+Multiple Choice
+As we approach the exascale era, what is one of the primary challenges for the scalability of parallel filesystems?
+
+Reducing the cost of storage hardware.
+
+Decreasing the number of compute nodes required.
+
+Simplifying the file system interface for end-users.
+
+Managing metadata efficiently as the scale of data and number of nodes increase.
+
+Eliminating the need for network communication between nodes.
+
+Question 23
+23
+Multiple Choice
+What is the most important library for distributed-memory architectures?
+
+Pthreads
+
+VTK
+
+OpenMP
+
+MPI
+
+Question 24
+24
+Multiple Choice
+In the context of HPC, why might arrays be preferred over linked lists for data processing?
+
+Arrays require less synchronization in multi-threaded environments.
+
+Linked lists allow for faster access to random elements.
+
+Arrays are more flexible in memory allocation.
+
+Linked lists are easier to parallelize.
+
+Arrays support better data locality, which is crucial for cache performance.
+
+Question 25
+25
+Multiple Choice
+Performance Monitoring When optimizing a high-performance computing application, performance monitoring is crucial to:
+
+Process signals.
+
+Identify bottlenecks and inefficiencies in the code.
+
+Solve partial differential equations.
+
+Visualize 3D datasets.
+
+Decompose meshes.
+
+Question 26
+26
+Multiple Choice
+In which scenario would data compression and chunking be most beneficial for optimizing I/O performance in an HPC application?
+
+When managing small, randomly accessed files.
+
+When the application only requires local storage.
+
+When dealing with large, sequential datasets that are frequently accessed.
+
+When data security is the primary concern.
+
+When the primary goal is to reduce CPU usage.
+
+Question 27
+27
+True/False
+MTL4 and Blaze are examples of higher-level abstraction interfaces that application developers can use to develop distributed linear algebra applications using code that is very simple to read. 
+
+T
+True
+F
+False
+Question 28
+28
+Matching
+Match each library with the application domain
+
+Prompts
+Answers
+1
+Linear algebra 
+
+ BLAS, Lapack, ScaLapack, GNU Scientific Library 
+
+2
+Partial differential equations 
+
+PETSc, Trilinos
+
+3
+Graph algorithms
+
+ Boost Graph Library, Parallel Boost Graph Library
+
+4
+input/output
+
+HDF5, Netcdf, Silo
+
+5
+Parallelization 
+
+Pthreads, MPI, Boost MPI 
+
+Question 29
+29
+Multiple Choice
+Library BLAS Levels 2 and 3 names are of the form cblas_pmmoo, where the p indicates the ______, mm indicates the ____ type, and oo indicates the _________
+
+Position, malloc object, operation
+
+None of the above
+
+Position, matrix, objects
+
+Precision, matrix, operation
+
+Question 30
+30
+Multiple Choice
+Linear Algebra in HPC Which of the following is NOT a function of Basic Linear Algebra Subprograms (BLAS)?
+
+Matrix-vector product
+
+Dot product
+
+Vector scaling
+
+Vector addition
+
+Matrix inversion
+
+Question 31
+31
+Multiple Choice
+In the context of I/O optimization, how does caching improve data access performance in HPC systems?
+
+By distributing data evenly across all available nodes.
+
+By compressing data on the fly to save storage space.
+
+By storing all data in the CPU cache, eliminating the need for disk access.
+
+By preloading frequently accessed data into faster storage layers like RAM, reducing disk access times.
+
+By automatically encrypting data before it is cached.
+
+Question 32
+32
+Multiple Choice
+You are tasked with reducing the frequency of checkpointing in a weather simulation running on an HPC system. What factors should you consider when determining the optimal checkpoint interval?
+
+The number of checkpoints stored and the memory usage of the application
+
+The number of MPI processes and the size of the simulation grid
+
+The clock speed of the CPU and the total simulation time
+
+The overhead of I/O operations and the likelihood of system failures.
+
+The precision of the simulation and the complexity of the atmospheric model
+
+Question 33
+33
+Multiple Choice
+You have integrated Scalable Checkpoint/Restart (SCR) into an MPI-based simulation. How can SCR help in reducing the checkpoint overhead, and what additional strategies can you implement to further minimize the impact of checkpointing on the application's performance?
+
+SCR manages parallel I/O efficiently; increase the number of I/O nodes.
+
+SCR allows node-local storage; combine this with incremental checkpointing.
+
+SCR uses compression to reduce checkpoint file size; increase checkpoint frequency.
+
+SCR uses selective state saving; reduce checkpoint frequency to minimize overhead.
+
+SCR performs asynchronous checkpointing; use coordinated checkpointing instead.
+
+Question 34
+34
+Multiple Choice
+Performance Monitoring When optimizing a high-performance computing application, performance monitoring is crucial to:
+
+Visualize 3D datasets.
+
+Decompose meshes.
+
+Solve partial differential equations.
+
+Process signals.
+
+Identify bottlenecks and inefficiencies in the code.
+
+Question 35
+35
+Multiple Choice
+Which profiling technique is most suitable for identifying performance bottlenecks in parallel applications?
+
+Sampling
+
+Instrumentation
+
+Tracing
+
+Memory profiling
+
+Call graph profiling
+
+Question 36
+36
+Multiple Choice
+In a parallel application, you use Scalasca to analyze MPI communication patterns. The tool reports a high percentage of time spent in MPI_Barrier calls. What does this suggest, and how could you optimize the application?
+
+Indicates poor memory access patterns; optimize data layout.
+
+Indicates load imbalance; improve workload distribution among processes.
+
+Indicates excessive data movement; reduce the number of MPI_Barrier calls.
+
+Indicates excessive branching; simplify conditional statements.
+
+Indicates inefficient thread management; reduce the number of threads.
+
+Question 37
+37
+Multiple Choice
+How do solid-state drives (SSDs) improve I/O performance in HPC storage systems compared to traditional spinning disks?
+
+By reducing latency and increasing IOPS (input/output operations per second).
+
+By simplifying the management of data across multiple nodes.
+
+By reducing the need for metadata management.
+
+By offering better data redundancy and fault tolerance.
+
+By providing larger storage capacity at a lower cost.
+
+Question 38
+38
+Multiple Choice
+Parallel Input/Output in Astrophysics An astrophysicist is dealing with vast datasets from cosmic simulations. The data needs to be read and written efficiently in a parallel manner across multiple nodes of a supercomputer. Which tool is designed for this specific task?
+
+METIS - Decomposes meshes for parallel computing.
+
+SuperLU - Solves systems of linear equations.
+
+HDF5 - Enables efficient storage and retrieval of vast datasets in parallel.
+
+Trilinos - Aims at solving PDEs.
+
+PAPI - Provides performance metrics from hardware counters.
+
+Question 39
+39
+Multiple Choice
+Weather forecasting models on HPC systems often involve large-scale matrix operations. What data structure choice would most efficiently utilize the system's memory hierarchy?
+
+Using arrays with contiguous memory allocation.
+
+Using hash tables for matrix storage.
+
+Using dynamic memory allocation for each matrix element.
+
+Using linked lists to store matrix data.
+
+Storing data on disk and accessing it as needed.
+
+Question 40
+40
+Multiple Choice
+For a large-scale simulation that requires high throughput and low latency, which filesystem would be more appropriate: NFS or Lustre, and why?
+
+Lustre, because it is designed for high throughput and handles large datasets efficiently.
+
+Both filesystems are equally suited for high-performance applications.
+
+NFS, because it supports high-concurrency applications better.
+
+NFS, because it is easier to manage in large clusters.
+
+Lustre, because it is more cost-effective for small workloads.
+
+Question 41
+41
+Multiple Choice
+During profiling with Valgrind's Massif tool, you observe that memory consumption peaks during a specific phase of your application. Which of the following strategies could help reduce this memory usage?
+
+Refactor the code to use stack allocation instead of heap allocation.
+
+Implement checkpointing to save memory state periodically.
+
+Split the workload into smaller, more manageable chunks.
+
+Reduce the number of processes running concurrently.
+
+Optimize the cache usage with loop tiling.
+
+Question 42
+42
+Multiple Choice
+Parallel Input/Output Which statement about Parallel Input/Output (I/O) in HPC is TRUE?
+
+It allows simultaneous reading/writing of data across multiple processors.
+
+It deals with the decomposition of meshes.
+
+It is used to solve linear equations.
+
+It is primarily used for signal processing.
+
+It focuses on visualizing data.
+
+Question 43
+43
+Multiple Choice
+You are optimizing a computational fluid dynamics (CFD) code running on an HPC system. The code frequently accesses large 3D arrays representing fluid properties. What is the most effective way to optimize memory access patterns to improve cache utilization?
+
+Increase the size of the cache through hardware upgrades.
+
+Randomize the memory access patterns to reduce cache conflicts.
+
+Use linked lists to store the data instead of arrays.
+
+Implement loop tiling to process small blocks of the 3D arrays that fit into the cache.
+
+Disable cache usage to avoid cache misses.
+
+Question 44
+44
+Multiple Choice
+BLAS (Basic Linear Algebra Subprograms) provides a standard interface to vector, matrix–vector, and matrix–matrix routines. What is the main difference between Blas level 1 and Blas level 2 and 3? 
+
+All of the above
+
+Blas 1 supports matrix and vectors operations
+
+Blas 1 does not support scalar and vectors operations
+
+Blas 1 does not support matrix operations
+
+Question 45
+45
+Multiple Choice
+Visualization Challenge A geophysicist is working with seismic data and needs a tool for 3D data rendering and visualization to interpret underground structures. Which tool would be best suited for this?
+
+HDF5 - Efficiently stores and retrieves large datasets.
+
+VTK - Supports large data and offers a wide range of visualization techniques.
+
+ParMETIS - Decomposes meshes for parallel computing.
+
+Boost Graph Library - Used for graph operations.
+
+Pthreads - Standard tool for distributing tasks over multi-core systems.
+
+Question 46
+46
+Multiple Choice
+In an HPC environment, you are tasked with optimizing a matrix multiplication operation for a large-scale scientific simulation. Which combination of the following techniques would likely yield the best performance improvement?
+
+Leveraging parallelism with OpenMP and using vectorization with SIMD instructions
+
+Applying loop unrolling and loop tiling (blocking)
+
+Relying solely on compiler optimizations without code modifications
+
+Switching to a different programming language
+
+Using a naive triple-nested loop
+
+Question 47
+47
+Multiple Choice
+You are optimizing a computational task on a supercomputer known for its high energy consumption. Which of the following strategies would most effectively reduce the energy usage of your computation?
+
+Rewriting the code in a more energy-efficient programming language.
+
+Disabling all power-saving features of the hardware.
+
+Running the computation in a single thread.
+
+Increasing the clock speed of the processors.
+
+Reducing the precision of calculations (e.g., from double to single precision).
+
+Question 48
+48
+Multiple Choice
+When optimizing a deep learning model on an HPC system, which of the following would most effectively leverage the system's vector processing capabilities?
+
+Relying on the operating system to optimize vector operations.
+
+Using a single CPU core to perform all computations.
+
+Disabling vector instructions to simplify debugging.
+
+Implementing manual vectorization using SIMD intrinsics for key operations.
+
+Converting all matrix operations to scalar operations.
+
+Question 49
+49
+Multiple Choice
+Parallel Input/Output Which statement about Parallel Input/Output (I/O) in HPC is TRUE?
+
+It is used to solve linear equations.
+
+It deals with the decomposition of meshes.
+
+It is primarily used for signal processing.
+
+It allows simultaneous reading/writing of data across multiple processors.
+
+It focuses on visualizing data.
+
+Question 50
+50
+Multiple Choice
+When implementing checkpointing in an HPC application, what is the primary trade-off you need to consider when determining the frequency of checkpoints?
+
+The trade-off between checkpoint consistency and parallel execution efficiency
+
+The trade-off between checkpoint size and recovery speed
+
+The trade-off between fault tolerance and computational precision
+
+The trade-off between checkpointing overhead and the potential loss of computation time in the event of a failure
+
+The trade-off between system-level and application-level checkpointing
