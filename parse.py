@@ -1,5 +1,7 @@
 import os
 import re
+from typing import List
+
 import pandas as pd
 import gspread
 from gspread_dataframe import set_with_dataframe
@@ -9,6 +11,143 @@ from google.oauth2.service_account import Credentials
 QUESTIONS_DIR = "questions"
 GOOGLE_SHEET_NAME = "HPC Practice Midterm Master"
 CREDENTIALS_FILE = "credentials.json"
+
+OPTION_COLUMNS = [f"Option {chr(ord('A') + i)}" for i in range(5)]
+IMAGE_LINE_RE = re.compile(r".+\.(?:png|jpg|jpeg|gif|bmp)$", re.IGNORECASE)
+
+
+def _normalise_space(text: str) -> str:
+    """Collapse inner whitespace and strip the string."""
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def _clean_line(line: str) -> str:
+    """Return a stripped line without surrounding whitespace."""
+    return line.strip().replace("\u00a0", " ")
+
+
+def parse_question_block(block: str, filename: str) -> List[List[str]]:
+    """Parse a single block of text into question/option rows."""
+
+    lines = block.splitlines()
+    question_lines: List[str] = []
+    options: List[str] = []
+    current_option: List[str] = []
+    correct_indices: List[int] = []
+
+    question_complete = False
+    saw_question_prompt = False
+    expect_continuation = False
+    mark_next_correct = False
+    skip_correct_answers_section = False
+
+    percent_re = re.compile(r"^\d+(?:\.\d+)?%$")
+
+    def flush_option():
+        nonlocal mark_next_correct
+        if current_option:
+            option_text = _normalise_space(" ".join(current_option))
+            if option_text:
+                options.append(option_text)
+                if mark_next_correct:
+                    correct_indices.append(len(options) - 1)
+        current_option.clear()
+        mark_next_correct = False
+
+    for raw_line in lines:
+        line = _clean_line(raw_line)
+
+        if not line:
+            if question_complete:
+                flush_option()
+            elif saw_question_prompt and not expect_continuation:
+                question_complete = True
+            continue
+
+        lower = line.lower()
+
+        # Discard structural / grading metadata.
+        if lower.startswith("question "):
+            continue
+        if re.fullmatch(r"\d+", line):
+            continue
+        if lower in {"multiple choice", "true", "false", "short answer"}:
+            continue
+        if lower in {"correct", "incorrect"}:
+            continue
+        if lower in {"/", "points possible"}:
+            continue
+        if lower.startswith("grade:"):
+            continue
+        if percent_re.match(line):
+            continue
+        if lower.endswith("points possible"):
+            continue
+
+        if lower.startswith("feedback"):
+            flush_option()
+            break
+
+        if lower.startswith("correct answers"):
+            skip_correct_answers_section = True
+            flush_option()
+            continue
+        if skip_correct_answers_section:
+            continue
+
+        if lower.startswith("explanation"):
+            skip_correct_answers_section = False
+            flush_option()
+            continue
+
+        if lower.startswith("correct answer"):
+            flush_option()
+            if options:
+                correct_indices.append(len(options) - 1)
+            continue
+
+        if lower.startswith("correct:"):
+            flush_option()
+            mark_next_correct = True
+            question_complete = True
+            continue
+
+        if lower.startswith("incorrect:"):
+            flush_option()
+            mark_next_correct = False
+            question_complete = True
+            continue
+
+        if lower.startswith("correct!") or lower.startswith("incorrect!"):
+            flush_option()
+            continue
+
+        if not question_complete:
+            question_lines.append(line)
+            if re.search(r"[?!]$", line) or line.endswith(".)") or line.endswith("?)") or line.endswith("."):
+                saw_question_prompt = True
+            expect_continuation = line.endswith(":")
+            continue
+
+        if not options and not current_option and IMAGE_LINE_RE.match(line):
+            question_lines.append(line)
+            continue
+
+        current_option.append(line)
+
+    flush_option()
+
+    if not question_lines or not options:
+        return []
+
+    while len(options) < len(OPTION_COLUMNS):
+        options.append("")
+
+    correct_letters = ",".join(
+        sorted({chr(ord("A") + idx) for idx in correct_indices if idx < len(OPTION_COLUMNS)})
+    )
+
+    return [[_normalise_space(" ".join(question_lines))] + options[: len(OPTION_COLUMNS)] + [correct_letters, filename]]
 # ==================================
 
 def truncate_cells(df, max_len=49000):
@@ -24,52 +163,25 @@ def parse_question_file(filepath):
     text = open(filepath, "r", encoding="utf-8", errors="ignore").read()
     text = text.replace("\r", "\n")
 
-    # Split by "Question", number, or blank lines followed by options
-    blocks = re.split(r"(?:^|\n)(?:Question\s*\d+[\.:]?|^\d+\.)", text, flags=re.MULTILINE)
-    blocks = [b.strip() for b in blocks if b.strip()]
-    data = []
+    blocks = re.split(r"\n(?=Question\s*\d+\b)", text)
+    filename = os.path.basename(filepath)
+    rows: List[List[str]] = []
 
     for block in blocks:
-        # find question line
-        question_match = re.search(r"^(.*?)(?=\n[A-E][\.\)]|\n\(A\)|\nA\s|\nOption A|\nA\)|\nA\.)", block, re.S | re.M)
-        question = question_match.group(1).strip() if question_match else block.splitlines()[0].strip()
+        block = block.strip()
+        if not block:
+            continue
+        rows.extend(parse_question_block(block, filename))
 
-        # find all options (A–E) with any punctuation
-        opts = re.findall(
-            r"(?:^|\n)\(?([A-Ea-e])[\)\.\s:-]+\s*(.+?)(?=\n\(?[A-Ea-e][\)\.\s:-]+|\Z)",
-            block,
-            re.S,
-        )
-        options = [""] * 5
-        for label, textopt in opts:
-            idx = ord(label.upper()) - ord("A")
-            if 0 <= idx < 5:
-                options[idx] = " ".join(textopt.split())
+    if not rows:
+        print(f"⚠️ No valid questions found in {filename}")
+        return pd.DataFrame(columns=[
+            "Question", *OPTION_COLUMNS, "Correct", "Source File"
+        ])
 
-        # detect correct answer (several possible markers)
-        correct = ""
-        corr_match = re.search(r"(?i)(correct answer|answer|correct|right)[:\s-]*([A-Ea-e])", block)
-        if corr_match:
-            correct = corr_match.group(2).upper()
-        else:
-            # if * marks correct
-            star = re.search(r"\*+\s*\(?([A-Ea-e])[\)\.\s:-]", block)
-            if star:
-                correct = star.group(1).upper()
-
-        # pad options
-        while len(options) < 5:
-            options.append("")
-
-        data.append([question] + options[:5] + [correct, os.path.basename(filepath)])
-
-    if not data:
-        print(f"⚠️ No valid questions found in {os.path.basename(filepath)}")
-    else:
-        print(f"✅ Parsed {len(data)} questions from {os.path.basename(filepath)}")
-
-    return pd.DataFrame(data, columns=[
-        "Question", "Option A", "Option B", "Option C", "Option D", "Option E", "Correct", "Source File"
+    print(f"✅ Parsed {len(rows)} questions from {filename}")
+    return pd.DataFrame(rows, columns=[
+        "Question", *OPTION_COLUMNS, "Correct", "Source File"
     ])
 
 # ----------------------------------------------------------
@@ -88,7 +200,11 @@ def push_to_google_sheets(df):
 
 # ----------------------------------------------------------
 def main():
-    files = [os.path.join(QUESTIONS_DIR, f) for f in os.listdir(QUESTIONS_DIR) if f.endswith(".txt")]
+    files = sorted(
+        os.path.join(QUESTIONS_DIR, f)
+        for f in os.listdir(QUESTIONS_DIR)
+        if f.endswith(".txt")
+    )
     if not files:
         print("⚠️ No .txt files found in 'questions/' folder.")
         return
@@ -96,11 +212,37 @@ def main():
     all_dfs = []
     for f in files:
         df = parse_question_file(f)
-        all_dfs.append(df)
+        if not df.empty:
+            all_dfs.append(df)
+
+    if not all_dfs:
+        print("⚠️ No parsable questions found in the provided files.")
+        return
+
     combined = pd.concat(all_dfs, ignore_index=True)
 
-    combined = truncate_cells(combined)
-    push_to_google_sheets(combined)
+    # Flag duplicate questions across all sources.
+    normalized_question = (
+        combined["Question"].astype(str).str.lower().str.replace(r"\s+", " ", regex=True).str.strip()
+    )
+    counts = normalized_question.value_counts()
+    combined["Unique"] = normalized_question.map(lambda x: counts.get(x, 0) == 1)
+
+    first_occurrence_mask = ~normalized_question.duplicated(keep="first")
+    skipped_duplicates = combined[~first_occurrence_mask]
+    if not skipped_duplicates.empty:
+        print(
+            f"⚠️ Skipping {len(skipped_duplicates)} duplicate question entries "
+            "across all sources."
+        )
+
+    unique_questions = combined[first_occurrence_mask].copy()
+    if unique_questions.empty:
+        print("⚠️ No unique questions available after de-duplication.")
+        return
+
+    unique_questions = truncate_cells(unique_questions)
+    push_to_google_sheets(unique_questions)
 
 if __name__ == "__main__":
     main()
