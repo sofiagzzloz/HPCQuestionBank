@@ -2,7 +2,7 @@
 I created this to help my friends and I gather all questions to practice for our midterm
 
 ## What does it do?
-This very simple app will parses all of the .txt files that are inside the questions folder (I didnt put them on .gitignore for the purpose that my friends could upload them via git)
+This very simple app will parse all of the .txt files that are inside the questions folder (I didnt put them on .gitignore for the purpose that my friends could upload them via git)
 I had to take into consideration that the questions are not always gonna follow the same fortmat, so parsing was a main challenge.
 
 After this will create a google sheets with the questions, answer options, which is the correct answer (if provided), which .txt file is it getting it from, and if its a unique entry (questions repeat). Im only taking unique questions in the google sheets. 
